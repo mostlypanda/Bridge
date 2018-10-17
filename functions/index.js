@@ -68,45 +68,45 @@ function onBoard(req, res) {
 	})
 }
 
-async function fetchShops(docData, category, subCategory, item, data, doc) {
-
-
-		let itemRef = shops.doc(docData.shopname).collection("inventory").doc(category).collection(subCategory).doc(item);
-		itemRef.get()
-		.then((snapshot) => {
-
-			if(snapshot.exists === false) {
-
-				return;
-				// return res.status(200).json({
-				// 	success: true,
-				// 	message: "no shops available"
-				// })
-			}
-
-			let details = {
-				price: snapshot.data().price,
-				data: doc.data()
-			}
-
-			console.log(snapshot.data());
-			console.log(doc.id, '=>', details);
-			// data["shops"].push(details);
-
-			data["shops"].push(details);
-			return details;
-		})
-		.catch((err) => {
-
-			let message = {
-				err: err,
-				message: "could not get shops data"
-			}
-			console.log(message);
-
-			return err;
-		})
-}
+// async function fetchShops(docData, category, subCategory, item, data, doc) {
+//
+//
+// 	let itemRef = shops.doc(docData.shopname).collection("inventory").doc(category).collection(subCategory).doc(item);
+// 	itemRef.get()
+// 	.then((snapshot) => {
+//
+// 		if(snapshot.exists === false) {
+//
+// 			return;
+// 			// return res.status(200).json({
+// 			// 	success: true,
+// 			// 	message: "no shops available"
+// 			// })
+// 		}
+//
+// 		let details = {
+// 			price: snapshot.data().price,
+// 			data: doc.data()
+// 		}
+//
+// 		console.log(snapshot.data());
+// 		console.log(doc.id, '=>', details);
+// 		// data["shops"].push(details);
+//
+// 		data["shops"].push(details);
+// 		return details;
+// 	})
+// 	.catch((err) => {
+//
+// 		let message = {
+// 			err: err,
+// 			message: "could not get shops data"
+// 		}
+// 		console.log(message);
+//
+// 		return err;
+// 	})
+// }
 
 function fdata(req, res) {
 
@@ -122,9 +122,10 @@ function fdata(req, res) {
 	let longitude = parseFloat(req.query.longitude);
 
 	// console.log(subCategory, category, item, latitude, longitude);
+	let temp;
 
 	let query = shops.where('latitude', '>=', latitude - lat).where('latitude', "<=", latitude + lat).get()
-	.then(async function(snapshot) {
+	.then(function(snapshot) {
 
 		let data = {shops: []};
 
@@ -140,25 +141,57 @@ function fdata(req, res) {
 			// console.log(docData);
 
 			if(docData.longitude <= longitude + lon && docData.longitude >= longitude -lon) {
-				
+
 				// console.log(doc.data());
 				// console.log("---------");
 				// console.log("---------");
+				let itemRef = shops.doc(docData.shopname).collection("inventory").doc(category).collection(subCategory).doc(item);
+				temp =itemRef.get()
+				.then((snapshot) => {
 
+					if(snapshot.exists === false) {
 
-				let d = fetchShops(docData, category, subCategory, item, data, doc);
+						return;
+						// return res.status(200).json({
+						// 	success: true,
+						// 	message: "no shops available"
+						// })
+					}
+
+					let details = {
+						price: snapshot.data().price,
+						data: doc.data()
+					}
+
+					console.log(snapshot.data());
+					console.log(doc.id, '=>', details);
+					// data["shops"].push(details);
+
+					data["shops"].push(details);
+					return details;
+				})
+				.catch((err) => {
+
+					let message = {
+						err: err,
+						message: "could not get shops data"
+					}
+					console.log(message);
+
+					return err;
+				})
+
 			}
 
 		})
 
+			temp.then(function(){
+				return res.status(200).json({
+					success: true,
+					data: data
+				});
+			}).catch(err => {console.log(err);})
 
-		setTimeout(function() {
-			return res.status(200).json({
-				success: true,
-				data: data
-			})
-			
-		}, 3000);
 
 	})
 	.catch((err) => {
@@ -171,27 +204,27 @@ function fdata(req, res) {
 	// 	let data = {shop:[]};
 	// 	snapshot.forEach(doc => {
 	// 		console.log(doc.data().shopname+doc.data().longitude);
-			// if(doc.data().longitude<=parseFloat(req.query.longitude)+lon &&doc.data().longitude>=parseFloat(req.query.longitude)-lon){
-				// var ref= db.collection("shops").doc(doc.data().shopname).collection("inventory").doc(req.query.category).collection(req.query.subCategory).doc(req.query.item);
-				// 	//console.log(ref);
-				// 	ref.get().then((snapshot)=>{
-				// 		console.log(snapshot.data());
-				// 		if(snapshot.exists){
-				// 			console.log(doc.data().shopname+doc.data().longitude);
-				// 			console.log('heyyyy');
-				// 			let dat={
-				// 				price:snapshot.data().price,
-				// 				data:doc.data()
-				// 			}
-				// 			console.log(doc.id, '=>', dat);
-				// 			data.shop.push({
-				// 				data:dat,
-				// 			});
-				// 		}
-				// 		res.json(data);
-				// 	}).catch(err => {console.log(err);})
-			// 	} });
-		  // res.json(data);
+	// if(doc.data().longitude<=parseFloat(req.query.longitude)+lon &&doc.data().longitude>=parseFloat(req.query.longitude)-lon){
+	// var ref= db.collection("shops").doc(doc.data().shopname).collection("inventory").doc(req.query.category).collection(req.query.subCategory).doc(req.query.item);
+	// 	//console.log(ref);
+	// 	ref.get().then((snapshot)=>{
+	// 		console.log(snapshot.data());
+	// 		if(snapshot.exists){
+	// 			console.log(doc.data().shopname+doc.data().longitude);
+	// 			console.log('heyyyy');
+	// 			let dat={
+	// 				price:snapshot.data().price,
+	// 				data:doc.data()
+	// 			}
+	// 			console.log(doc.id, '=>', dat);
+	// 			data.shop.push({
+	// 				data:dat,
+	// 			});
+	// 		}
+	// 		res.json(data);
+	// 	}).catch(err => {console.log(err);})
+	// 	} });
+	// res.json(data);
 	// 	})
 	// .catch(err => {
 
@@ -203,7 +236,7 @@ function fdata(req, res) {
 	// 	})
 
 	// });
-  // [END get_multiple]
+	// [END get_multiple]
 
 
 }
@@ -251,7 +284,7 @@ function getAllItems(req, res){
 	var citiesRef = db.collection('shops');
 
 	// console.log(parseFloat(req.query.latitude)+1+"   "+req.query.longitude);
-	
+
 	var query = citiesRef.where('latitude', '>=', parseFloat(latitude)-lat).where('latitude', '<=', parseFloat(latitude) + lat).get()
 	.then(snapshot => {
 
@@ -261,12 +294,12 @@ function getAllItems(req, res){
 			console.log(doc.data().shopname+doc.data().longitude);
 
 			if((doc.data().longitude <= parseFloat(longitude) + lon) && (doc.data().longitude >= parseFloat(longitude) - lon)) {
-					//////////////           CODE HERE              ///////////////////
+				//////////////           CODE HERE              ///////////////////
 
 
-				} 
-			});
-		
+			}
+		});
+
 		res.json({
 			success: true
 		});
