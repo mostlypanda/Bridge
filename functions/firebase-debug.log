@@ -1,0 +1,33 @@
+[debug] [2018-10-17T18:54:27.446Z] ----------------------------------------------------------------------
+[debug] [2018-10-17T18:54:27.449Z] Command:       /usr/bin/node /usr/bin/firebase serve
+[debug] [2018-10-17T18:54:27.449Z] CLI Version:   5.0.1
+[debug] [2018-10-17T18:54:27.449Z] Platform:      linux
+[debug] [2018-10-17T18:54:27.449Z] Node Version:  v8.12.0
+[debug] [2018-10-17T18:54:27.449Z] Time:          Thu Oct 18 2018 00:24:27 GMT+0530 (IST)
+[debug] [2018-10-17T18:54:27.449Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-10-17T18:54:27.457Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-10-17T18:54:27.457Z] > authorizing via signed-in user
+[debug] [2018-10-17T18:54:27.457Z] [iam] checking project excaliburtut for permissions ["firebase.projects.get"]
+[debug] [2018-10-17T18:54:27.459Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/excaliburtut:testIamPermissions  
+
+[debug] [2018-10-17T18:54:30.408Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-17T18:54:30.413Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/excaliburtut  
+ 
+[debug] [2018-10-17T18:54:32.596Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from '/media/ankurcharan/EA84A99384A96335/Intel Inside/Web Dev/Techspardha/Bridge'...
+[info] 
+[info] i  functions: Preparing to emulate functions.
+[debug] [2018-10-17T18:54:33.034Z] Fetching environment
+[debug] [2018-10-17T18:54:33.036Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/749026176874:getServerAppConfig  
+ 
+[debug] [2018-10-17T18:54:33.036Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/749026176874/clients/_:getWebAppConfig  
+ 
+[debug] [2018-10-17T18:54:34.761Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-17T18:54:34.763Z] Starting @google-cloud/functions-emulator
+[debug] [2018-10-17T18:54:35.242Z] <<< HTTP RESPONSE 200
+[info] i  hosting: Serving hosting files from: public
+[info] ✔  hosting: Local server: http://localhost:5000
+[debug] [2018-10-17T18:54:35.810Z] Parsing function triggers
+[info] ✔  functions: api: http://localhost:5001/excaliburtut/us-central1/api
