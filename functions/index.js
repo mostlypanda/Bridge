@@ -3,6 +3,9 @@ const functions = require('firebase-functions');
 const request = require('request');
 const express = require('express');
 const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
+const config = require('./config');
+const isAuthenticated = require('./middlewares/auth');
 
 admin.initializeApp(functions.config().firebase);
 
@@ -15,10 +18,19 @@ app.use(bodyParser.urlencoded({extended:false}));
 // constants
 let shops = db.collection('shops');
 
+// Hard-Coded String
+const googleUrl = 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=';
+
 // ROUTES
+app.post('/login', googleLogin);
+app.put('/onBoard', isAuthenticated, onBoard);
+
+app.get('/auth', isAuthenticated, function (req, res) {
+	res.send("isAuthenticated");
+})
+
 app.get('/fdata', fdata);
 app.post('/addData', addData);
-app.post('/onBoard', onBoard);
 
 app.use('/', function(req, res) {
 	res.json({
@@ -33,38 +45,225 @@ app.use('/', function(req, res) {
 //const lon = 1;
 
 
-function onBoard(req, res) {
 
-	let shopName = req.body.shopName;
-	let latitude = req.body.latitude;
-	let longitude = req.body.longitude;
+function googleLogin(req, response) {
 
-	if(shopName === undefined || latitude === undefined || longitude === undefined) {
+	let idToken = req.body.idToken;
+	if(idToken === undefined) {
+
 		return res.status(400).json({
 			success: false,
-			message: "Usage: shopName=name&latitude=lat&longitude"
+			message: "Usage: [POST] idToken=token"
 		})
 	}
 
-	latitude = parseFloat(latitude);
-	longitude = parseFloat(longitude);
+	request(googleUrl + idToken, {json: true}, (err, res, body) => {
 
-	shops.doc(shopName).set({
-		latitude,
-		longitude,
-		shopName
-	})
-	.then(() => {
-		res.status(200).json({
-			success: true,
-			message: `${shopName} added to database`
+		if(err) {
+			// not acdeptable
+			return response.status(406).json({
+				success: false,
+				message: "could not make request to google",
+				err: err
+			})
+		}
+
+		console.log(body);
+
+		if(body.error_description !== undefined) {
+
+			return response.status(400).json({
+				message: "empty/invalid token",
+				error: 'unauthenticated request',
+				success: false,
+			})
+		}
+
+		let sub = body.sub;
+		let name = body.name;
+		let email = body.email;
+		let picture = body.picture;
+
+		console.log(sub, name, email, picture);
+
+		shops.doc(body.sub).get()
+		.then((snapshot) => {
+			// console.log(snapshot.data());
+
+			if(snapshot.data() === undefined) {
+
+				let userData = {
+					name: name,
+					sub: sub,
+					email: email,
+					picture: picture,
+					onBoard: false
+				}
+
+				shops.doc(sub).set(userData);
+
+				const token = jwt.sign(userData, config.key);
+
+				let data = {token: token};
+
+				return response.status(200).json({
+					success: true,
+					onBoard: false,
+					data: data
+				})
+			}
+			else {
+				
+				// console.log("user exits");
+				// console.log(snapshot.data());
+
+				let userData = {
+					name: snapshot.data().name,
+					sub: snapshot.data().sub,
+					email: snapshot.data().email,
+					picture: snapshot.data().picture,
+					onBoard: snapshot.data().onBoard
+				}
+
+				if(snapshot.data().onBoard === true) {
+					
+					userData.latitude = snapshot.data().latitude;
+					userData.longitude = snapshot.data().longitude;
+					userData.address = snapshot.data().address;
+					userData.shopName = snapshot.data().shopName;
+				}
+
+				const token = jwt.sign(userData, config.key);
+
+				let data = {token: token};
+
+				return response.status(200).json({
+					success: true,
+					onBoard: snapshot.data().onBoard,
+					data: data
+				})
+			}
+		})
+		.catch((err) => {
+
+			return response.status(500).json({
+				success: false,
+				message: "could not fetch user data",
+				err: err
+			})
+
 		})
 	})
-	.catch(() => {
-		res.status(500).json({
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function onBoard(req, res) {
+
+	console.log(req.body);
+
+	let shopName = req.body.shopName;
+	let latitude = parseFloat(req.body.latitude);
+	let longitude = parseFloat(req.body.longitude);
+	let address = req.body.address;
+	let sub = req.body.sub;
+
+	if(shopName === undefined || latitude === undefined || longitude === undefined || address === undefined) {
+		return res.status(400).json({
 			success: false,
-			message: "could not add shop"
+			message: "Usage: [PUT] shopName=name&latitude=lat&longitude=lon&address=addr"
 		})
+	}
+
+	shops.doc(sub).get()
+	.then((snapshot) => {
+
+		if(snapshot.data() === undefined) {
+			// user does not exist
+			return res.status(403).json({
+				success: false,
+				message: "user does not exist"
+			})
+		}
+
+		let userData = snapshot.data();
+
+		if(userData.onBoard === false) {
+
+			shops.doc(sub).update({
+				onBoard: true,
+				latitude: latitude,
+				longitude: longitude,
+				address: address,
+				shopName: shopName
+			})
+
+			let userData = {
+				name: snapshot.data().name,
+				sub: snapshot.data().sub,
+				email: snapshot.data().email,
+				picture: snapshot.data().picture,
+				onBoard: true,
+				latitude: latitude,
+				longitude: longitude,
+				address: address,
+				shopName: shopName
+			}
+
+			console.log(userData);
+
+			const token = jwt.sign(userData, config.key);
+
+			let data = {token};
+
+			return res.status(200).json({
+				success: true,
+				message: "user onBoard now",
+				data: data
+			})
+		}
+		else {
+
+			return res.status(405).json({
+				success: false,
+				message: "not allowed, already onBoard"
+			})
+		}
 	})
 }
 
