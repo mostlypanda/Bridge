@@ -113,7 +113,7 @@ function googleLogin(req, response) {
 				})
 			}
 			else {
-				
+
 				// console.log("user exits");
 				// console.log(snapshot.data());
 
@@ -126,7 +126,7 @@ function googleLogin(req, response) {
 				}
 
 				if(snapshot.data().onBoard === true) {
-					
+
 					userData.latitude = snapshot.data().latitude;
 					userData.longitude = snapshot.data().longitude;
 					userData.address = snapshot.data().address;
@@ -350,11 +350,11 @@ function fdata(req, res) {
 
 					if(snapshot.exists === false) {
 
-						return;
-						// return res.status(200).json({
-						// 	success: true,
-						// 	message: "no shops available"
-						// })
+						// return;
+						return res.status(200).json({
+							success: true,
+							message: "no shops available"
+						})
 					}
 
 					let details = {
@@ -367,7 +367,7 @@ function fdata(req, res) {
 					// data["shops"].push(details);
 
 					data["shops"].push(details);
-					return details;
+					// return details;
 				})
 				.catch((err) => {
 
@@ -377,19 +377,19 @@ function fdata(req, res) {
 					}
 					console.log(message);
 
-					return err;
+					res.status(400).json(message);
 				})
 
 			}
 
 		})
 
-			temp.then(function(){
-				return res.status(200).json({
-					success: true,
-					data: data
-				});
-			}).catch(err => {console.log(err);})
+		temp.then(function(){
+			return res.status(200).json({
+				success: true,
+				data: data
+			});
+		}).catch(err => {console.log(err);})
 
 
 	})
