@@ -350,11 +350,11 @@ function fdata(req, res) {
 
 					if(snapshot.exists === false) {
 
-						// return;
-						return res.status(200).json({
-							success: true,
-							message: "no shops available"
-						})
+						return;
+						// return res.status(200).json({
+						// 	success: true,
+						// 	message: "no shops available"
+						// })
 					}
 
 					let details = {
