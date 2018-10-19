@@ -19,6 +19,9 @@ app.use(bodyParser.urlencoded({extended:false}));
 let shops = db.collection('shops');
 let items = db.collection('items');
 
+const latitudeConstant = 0.0144927536231884;
+const longitudeConstant = 0.0181818181818182;
+
 // Hard-Coded String
 const googleUrl = 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=';
 const inventory = "inventory";
@@ -34,7 +37,12 @@ app.get('/auth', isAuthenticated, function (req, res) {
 
 // inventory
 app.post('/user/inventory', isAuthenticated, addInventory);
-//app.post('/user/inventory', addInventory);
+// app.post('/user/inventory', addInventory);
+
+//location
+// app.get('/location', nearby);
+
+
 
 app.get('/getAll', getAllItems);
 app.get('/fdata', fdata2);
@@ -53,6 +61,7 @@ app.use('/', function(req, res) {
 //const lon = 10*0.0181818181818182;
 //const lat = 1;
 //const lon = 1;
+
 function fakeItemFetch(req, res)
 {
 	let data=	{
@@ -410,43 +419,106 @@ function fdata(req, res) {
 
 
 
+// function getNearByShops(queryLatitude, queryLongitude, distanceInMiles, req, res) {
+
+// 	const latitude = parseFloat(queryLatitude);
+// 	const longitude = parseFloat(queryLongitude);
+// 	const distance = parseFloat(distanceInMiles);
+
+// 	const lat = distance* latitudeConstant;
+// 	const lon = distance * longitudeConstant;
+
+// 	let query = shops.where('latitude', '>=', latitude - lat).where('latitude', '<=', latitude + lat).get()
+// 	.then((snapshot) => {
+
+// 		let shops = new Array();
+
+// 		snapshot.forEach((shop) => {
+
+// 			let shopDetails = shop.data();
+
+// 			if((shopDetails.longitude >= longitude - lon) && (shopDetails.longitude <= longitude + lon)) {
+
+// 				// shop in local-area
+// 				console.longitude(shopDetails);
+// 			}
+
+// 		})
+
+// 		// return res.status(200).json({
+// 		// 	success: true,
+// 		// 	message: "got shops",
+// 		// 	data: shops
+// 		// })
+// 		return true;
+
+// 	})
+// 	.catch((err) => {
+
+// 		return true;
+// 		// return res.status(500).json({
+// 		// 	success: false,
+// 		// 	err: err
+// 		// })
+// 	})
+
+// }
+
+// function nearby(req, res) {
+
+// 	return getNearByShops(req.query.latitude, req.query.longitude, req.query.dis, req, res);
+
+// }
+
+
+
+
 
 function getAllItems(req, res){
-
-	// console.log("hey");
 
 	const lat = parseFloat(req.query.dis)*0.0144927536231884;
 	const lon = parseFloat(req.query.dis)*0.0181818181818182;
 
 	let latitude = req.query.latitude;
 	let longitude = req.query.longitude;
-	let category=req.query.category;
-	let subCategory=req.query.subCategory;
-
-
-	// console.log(parseFloat(req.query.latitude)+1+"   "+req.query.longitude);
+	let category = req.query.category;
+	let subCategory = req.query.subCategory;
 
 	var query = shops.where('latitude', '>=', parseFloat(latitude)-lat).where('latitude', '<=', parseFloat(latitude) + lat).get()
 	.then(snapshot => {
 
-		let data = {shop:[]};
+		let data = {
+			shops: []
+		};
+
+		let verify;
+		
 		snapshot.forEach(doc => {
 
-			console.log(doc.data().shopName+doc.data().longitude);
-
 			if((doc.data().longitude <= parseFloat(longitude) + lon) && (doc.data().longitude >= parseFloat(longitude) - lon)) {
-				//////////////           CODE HERE              ///////////////////
-				let verify;
+				
+				let shop = {};
+				shop["shopDetails"] = doc.data();
+				shop["itemAvailable"] = new Array();
+
 				let ref = shops.doc(doc.data().sub).collection("inventory").doc(category).collection(subCategory);
-				verify=ref.get()
+				verify = ref.get()
 				.then((snap)=>{
+
+
 					snap.forEach((itemDoc)=>{
-						let itemData=itemDoc.data();
-						console.log(doc.data());
+
+						let itemData = itemDoc.data();
 						console.log(itemData);
-						console.log("------------------------");
+
+						shop["itemAvailable"].push(itemData);
+					
 					})
 
+					if(shop["itemAvailable"].length > 0) {
+
+						data["shops"].push(shop);
+					}
 				})
 				.catch(err => {
 					console.log(err);
