@@ -4,6 +4,7 @@ const request = require('request');
 const express = require('express');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 const config = require('./config');
 const isAuthenticated = require('./middlewares/auth');
 
@@ -27,6 +28,11 @@ const googleUrl = 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=';
 const inventory = "inventory";
 
 // ROUTES
+
+//cors
+app.use(cors({
+	origin: true	
+}));
 
 // authentication
 app.post('/login', googleLogin);
