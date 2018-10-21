@@ -45,7 +45,7 @@ app.get('/inventory', getAllInventory);
 
 
 app.get('/getAll', getAllItems);
-app.get('/fdata', fdata2);
+app.get('/fetchShops', fdata3);
 app.post('/addData', addData);
 
 app.get('/fakeItemFetch', fakeItemFetch)
@@ -61,6 +61,13 @@ app.use('/', function(req, res) {
 //const lon = 10*0.0181818181818182;
 //const lat = 1;
 //const lon = 1;
+function modifiedName(x)
+{
+	x=x.toLowerCase(x);
+	x=x.replace(/[^a-zA-Z ]/g, "");
+	x=x.replace(/\s/g,'');
+	return x;
+}
 
 function fakeItemFetch(req, res)
 {
@@ -140,13 +147,7 @@ function addInventory(req, res) {
 }
 
 
-function modifiedName(x)
-{
-	x=x.toLowerCase(x);
-	x=x.replace(/[^a-zA-Z ]/g, "");
-	x=x.replace(/\s/g,'');
-	return x;
-}
+
 
 function addInventory2(req, res) {
 
@@ -362,122 +363,260 @@ function fdata(req, res) {
 	// });
 	// [END get_multiple]
 
-	function fdata2(req, res) {
+function fdata2(req, res) {
 
-		// console.log("hey");
+	// console.log("hey");
 
-		const lat = parseFloat(req.query.dis)*0.0144927536231884;
-		const lon = parseFloat(req.query.dis)*0.0181818181818182;
+	const lat = parseFloat(req.query.dis)*0.0144927536231884;
+	const lon = parseFloat(req.query.dis)*0.0181818181818182;
 
-		// let subCategory = req.query.subCategory;
-		// let category = req.query.category;
-		let subCategory='';
-		let category='';
-		let item = req.query.item;
-		let latitude = parseFloat(req.query.latitude);
-		let longitude = parseFloat(req.query.longitude);
-		let prom;
-		let ref=items.doc(item);
-		prom=ref.get()
-		.then((itemSnap)=>{
-			category=itemSnap.data().category;
-			subCategory=itemSnap.data().subCategory;
+	// let subCategory = req.query.subCategory;
+	// let category = req.query.category;
+	let subCategory='';
+	let category='';
+	let item = req.query.item;
+	let latitude = parseFloat(req.query.latitude);
+	let longitude = parseFloat(req.query.longitude);
+	let prom;
+	let ref=items.doc(item);
+	prom=ref.get()
+	.then((itemSnap)=>{
+		category=itemSnap.data().category;
+		subCategory=itemSnap.data().subCategory;
 
-		}).catch(err => {
-			console.log(err);
-			res.json({
-				success:false,
-				message:"could not find anything about that item"
-			})
-		});
-		prom.then(()=>{
-			console.log(category);
-			console.log(subCategory);
-			let temp=[];
+	}).catch(err => {
+		console.log(err);
+		res.json({
+			success:false,
+			message:"could not find anything about that item"
+		})
+	});
+	prom.then(()=>{
+		console.log(category);
+		console.log(subCategory);
+		let temp=[];
 
-			let query = shops.where('latitude', '>=', latitude - lat).where('latitude', "<=", latitude + lat).get()
-			.then(function(snapshot) {
+		let query = shops.where('latitude', '>=', latitude - lat).where('latitude', "<=", latitude + lat).get()
+		.then(function(snapshot) {
 
-				let data = {shops: []};
+			let data = {shops: []};
 
-				if(snapshot.exists === false) {
-					console.log('snap null');
-					res.json({
-						success:true,
-						data:data,
-					})
+			if(snapshot.exists === false) {
+				console.log('snap null');
+				res.json({
+					success:true,
+					data:data,
+				})
+			}
+
+			snapshot.forEach((doc) => {
+
+
+				let docData = doc.data();
+
+				// console.log(docData);
+
+				if(docData.longitude <= longitude + lon && docData.longitude >= longitude -lon) {
+
+					// console.log(doc.data());
+					// console.log("---------");
+					// console.log("---------");
+					let itemRef = shops.doc(docData.sub).collection("inventory").doc(category).collection(subCategory).doc(item);
+					temp.push(
+						itemRef.get()
+						.then((snapshot) => {
+
+							if(snapshot.exists === true) {
+
+								// return res.status(200).json({
+								// 	success: true,
+								// 	message: "no shops available"
+								// })
+
+
+							let details = {
+								price: snapshot.data().price,
+								data: doc.data()
+							}
+
+							//console.log(snapshot.data());
+							//console.log(doc.id, '=>', details);
+							// data["shops"].push(details);
+
+							data["shops"].push(details);
+							// return details;
+						}})
+						.catch((err) => {
+
+							let message = {
+								err: err,
+								message: "could not get shops data"
+							}
+							console.log(message);
+
+							res.status(400).json(message);
+						})
+					)
+
 				}
 
-				snapshot.forEach((doc) => {
+			})
+
+			Promise.all(temp).then(function(){
+				//console.log(temp);
+				return res.status(200).json({
+					success: true,
+					data: data
+				});
+			}).catch(err => {console.log(err);})
 
 
-					let docData = doc.data();
+		})
+		.catch((err) => {
+			console.log("catch", err);
+		})
+	}).catch(err => {console.log(err);})
+	// console.log(subCategory, category, item, latitude, longitude);
 
-					// console.log(docData);
-
-					if(docData.longitude <= longitude + lon && docData.longitude >= longitude -lon) {
-
-						// console.log(doc.data());
-						// console.log("---------");
-						// console.log("---------");
-						let itemRef = shops.doc(docData.sub).collection("inventory").doc(category).collection(subCategory).doc(item);
-						temp.push(
-							itemRef.get()
-							.then((snapshot) => {
-
-								if(snapshot.exists === true) {
-
-									// return res.status(200).json({
-									// 	success: true,
-									// 	message: "no shops available"
-									// })
+}
 
 
-								let details = {
-									price: snapshot.data().price,
-									data: doc.data()
-								}
 
-								//console.log(snapshot.data());
-								//console.log(doc.id, '=>', details);
-								// data["shops"].push(details);
 
-								data["shops"].push(details);
-								// return details;
-							}})
-							.catch((err) => {
 
-								let message = {
-									err: err,
-									message: "could not get shops data"
-								}
-								console.log(message);
 
-								res.status(400).json(message);
-							})
-						)
+function fdata3(req, res) {
 
-					}
+	// console.log("hey");
 
+	const lat = parseFloat(req.query.dis)*0.0144927536231884;
+	const lon = parseFloat(req.query.dis)*0.0181818181818182;
+	let data={shops:[]};
+
+	let subCategory='';
+	// let category='';
+	let item = req.query.item;
+	item=modifiedName(item);
+	let latitude = parseFloat(req.query.latitude);
+	let longitude = parseFloat(req.query.longitude);
+	let prom;
+	let ref=items.doc(item);
+	prom=ref.get()
+	.then((itemSnap)=>{
+		// category=itemSnap.data().category;
+		subCategory=itemSnap.data().subCategory;
+		subCategory=modifiedName(subCategory);
+
+	}).catch(err => {
+		console.log(err);
+		res.json({
+			success:false,
+			empty:true,
+			message:"could not find anything about that item",
+			data:data
+		})
+	});
+	prom.then(()=>{
+		// console.log(category);
+		console.log(subCategory);
+		let temp=[];
+
+		let query = shops.where('latitude', '>=', latitude - lat).where('latitude', "<=", latitude + lat).get()
+		.then(function(snapshot) {
+
+
+			if(snapshot.exists === false) {
+				console.log('snap null');
+				res.json({
+					success:true,
+					empty:true,
+					message:'no shops',
+					data:data,
 				})
+			}
 
-				Promise.all(temp).then(function(){
-					//console.log(temp);
-					return res.status(200).json({
-						success: true,
-						data: data
-					});
-				}).catch(err => {console.log(err);})
+			snapshot.forEach((doc) => {
 
+
+				let docData = doc.data();
+
+				// console.log(docData);
+
+				if(docData.longitude <= longitude + lon && docData.longitude >= longitude -lon) {
+
+					// console.log(doc.data());
+					// console.log("---------");
+					// console.log("---------");
+					let itemRef = shops.doc(docData.sub).collection(subCategory).doc(item);
+					temp.push(
+						itemRef.get()
+						.then((snapshot) => {
+
+							if(snapshot.exists === true) {
+
+								// return res.status(200).json({
+								// 	success: true,
+								// 	message: "no shops available"
+								// })
+
+
+							let details = {
+								price: snapshot.data().price,
+								data: doc.data()
+							}
+
+							//console.log(snapshot.data());
+							//console.log(doc.id, '=>', details);
+							// data["shops"].push(details);
+
+							data["shops"].push(details);
+							// return details;
+						}})
+						.catch((err) => {
+
+							let message = {
+								err: err,
+								message: "could not get shops data"
+							}
+							console.log(message);
+
+							res.status(400).json(message);
+						})
+					)
+
+				}
 
 			})
-			.catch((err) => {
-				console.log("catch", err);
-			})
-		}).catch(err => {console.log(err);})
-		// console.log(subCategory, category, item, latitude, longitude);
 
-	}
+			Promise.all(temp).then(function(){
+				//console.log(temp);
+				let empty=false;
+				if(data["shops"].length==0)
+				empty=true;
+				console.log(data["shops"].length);
+				return res.status(200).json({
+					success: true,
+					empty:empty,
+					data: data,
+				});
+			}).catch(err => {console.log(err);})
+
+
+		})
+		.catch((err) => {
+			console.log("catch", err);
+		})
+	}).catch(err => {console.log(err);})
+	// console.log(subCategory, category, item, latitude, longitude);
+
+}
+
+
+
+
+
+
+
 
 
 

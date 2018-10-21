@@ -30,3 +30,31 @@
 [debug] [2018-10-19T19:50:02.814Z] Starting @google-cloud/functions-emulator
 [debug] [2018-10-19T19:50:10.176Z] Parsing function triggers
 [info] +  functions: api: http://localhost:5000/excaliburtut/us-central1/api
+[debug] [2018-10-21T17:24:46.412Z] ----------------------------------------------------------------------
+[debug] [2018-10-21T17:24:46.415Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Gaurav Arora\AppData\Roaming\npm\node_modules\firebase-tools\bin\firebase serve --only functions
+[debug] [2018-10-21T17:24:46.416Z] CLI Version:   5.1.1
+[debug] [2018-10-21T17:24:46.416Z] Platform:      win32
+[debug] [2018-10-21T17:24:46.416Z] Node Version:  v8.11.4
+[debug] [2018-10-21T17:24:46.416Z] Time:          Sun Oct 21 2018 22:54:46 GMT+0530 (India Standard Time)
+[debug] [2018-10-21T17:24:46.416Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-10-21T17:24:46.434Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-10-21T17:24:46.436Z] > authorizing via signed-in user
+[debug] [2018-10-21T17:24:46.436Z] [iam] checking project excaliburtut for permissions ["firebase.projects.get"]
+[debug] [2018-10-21T17:24:46.438Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/excaliburtut:testIamPermissions  
+
+[debug] [2018-10-21T17:24:48.414Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-21T17:24:48.415Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/excaliburtut  
+ 
+[debug] [2018-10-21T17:24:50.209Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from 'F:\excalTut'...
+[info] 
+[info] i  functions: Preparing to emulate functions.
+[debug] [2018-10-21T17:24:51.535Z] Fetching environment
+[debug] [2018-10-21T17:24:51.538Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/749026176874:getServerAppConfig  
+ 
+[debug] [2018-10-21T17:24:52.404Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-21T17:24:52.405Z] Starting @google-cloud/functions-emulator
+[debug] [2018-10-21T17:24:55.559Z] Parsing function triggers
+[info] +  functions: api: http://localhost:5000/excaliburtut/us-central1/api
