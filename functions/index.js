@@ -36,9 +36,9 @@ app.get('/auth', isAuthenticated, function (req, res) {
 })
 
 // inventory
-app.post('/user/inventory', isAuthenticated, addInventory);
+app.post('/user/inventory', isAuthenticated, addInventory2);
 // app.post('/user/inventory', addInventory);
-
+app.get('/inventory', getAllInventory);
 //location
 // app.get('/location', nearby);
 
@@ -138,6 +138,67 @@ function addInventory(req, res) {
 		})
 	})
 }
+
+
+function modifiedName(x)
+{
+	x=x.toLowerCase(x);
+	x=x.replace(/[^a-zA-Z ]/g, "");
+	x=x.replace(/\s/g,'');
+	return x;
+}
+
+function addInventory2(req, res) {
+
+	console.log(req.body);
+
+	//let sub = req.body.items[0].sub;
+	let sub = req.body.sub;
+	let userInventory = shops.doc(sub);
+
+	let verify=[];
+
+	let items = req.body.items;
+	for(item in items) {
+
+		console.log(items[item]);
+
+		let subCategory = items[item].subCategory;
+		let itemName = items[item].itemName;
+		subCategory=modifiedName(subCategory);
+		itemName=modifiedName(itemName);
+		console.log(itemName);
+		verify.push(userInventory.collection(subCategory).doc(itemName).set(items[item]));
+		db.collection('items').doc(itemName).get((snap)=>{
+			if(snap.exists===false)
+			{
+				db.collection('items').doc(itemName).set({
+					subCategory:subCategory,
+				})
+			}
+		});
+	}
+
+	Promise.all(verify).then(() => {
+		return res.status(200).json({
+			success: true,
+			message: "items added"
+		})
+	})
+	.catch(() => {
+
+		return res.status(500).json({
+			success: false,
+			message: "could not add all items"
+		})
+	})
+}
+
+
+
+
+
+
 
 
 function addData(req, res) {
@@ -332,7 +393,7 @@ function fdata(req, res) {
 		prom.then(()=>{
 			console.log(category);
 			console.log(subCategory);
-			let temp;
+			let temp=[];
 
 			let query = shops.where('latitude', '>=', latitude - lat).where('latitude', "<=", latitude + lat).get()
 			.then(function(snapshot) {
@@ -360,46 +421,48 @@ function fdata(req, res) {
 						// console.log("---------");
 						// console.log("---------");
 						let itemRef = shops.doc(docData.sub).collection("inventory").doc(category).collection(subCategory).doc(item);
-						temp =itemRef.get()
-						.then((snapshot) => {
+						temp.push(
+							itemRef.get()
+							.then((snapshot) => {
 
-							if(snapshot.exists === true) {
+								if(snapshot.exists === true) {
 
-								// return res.status(200).json({
-								// 	success: true,
-								// 	message: "no shops available"
-								// })
+									// return res.status(200).json({
+									// 	success: true,
+									// 	message: "no shops available"
+									// })
 
 
-							let details = {
-								price: snapshot.data().price,
-								data: doc.data()
-							}
+								let details = {
+									price: snapshot.data().price,
+									data: doc.data()
+								}
 
-							console.log(snapshot.data());
-							console.log(doc.id, '=>', details);
-							// data["shops"].push(details);
+								//console.log(snapshot.data());
+								//console.log(doc.id, '=>', details);
+								// data["shops"].push(details);
 
-							data["shops"].push(details);
-							// return details;
-						}})
-						.catch((err) => {
+								data["shops"].push(details);
+								// return details;
+							}})
+							.catch((err) => {
 
-							let message = {
-								err: err,
-								message: "could not get shops data"
-							}
-							console.log(message);
+								let message = {
+									err: err,
+									message: "could not get shops data"
+								}
+								console.log(message);
 
-							res.status(400).json(message);
-						})
+								res.status(400).json(message);
+							})
+						)
 
 					}
 
 				})
 
-				temp.then(function(){
-					console.log(temp);
+				Promise.all(temp).then(function(){
+					//console.log(temp);
 					return res.status(200).json({
 						success: true,
 						data: data
@@ -492,11 +555,11 @@ function getAllItems(req, res){
 		};
 
 		let verify;
-		
+
 		snapshot.forEach(doc => {
 
 			if((doc.data().longitude <= parseFloat(longitude) + lon) && (doc.data().longitude >= parseFloat(longitude) - lon)) {
-				
+
 				let shop = {};
 				shop["shopDetails"] = doc.data();
 				shop["itemAvailable"] = new Array();
@@ -512,7 +575,7 @@ function getAllItems(req, res){
 						console.log(itemData);
 
 						shop["itemAvailable"].push(itemData);
-					
+
 					})
 
 					if(shop["itemAvailable"].length > 0) {
@@ -573,7 +636,23 @@ function getAllItems(req, res){
 
 
 
+function getAllInventory(req, res){
+	let verify;
+	let data={items:[]};
+	let sub=req.query.sub;
+	console.log(sub);
+	console.log(inventory);
+	verify=shops.doc(sub).collection(inventory).get()
+	.then((categories)=>{
+		categories.forEach((category)=>{
+			//categoryData=category.data()
+			console.log(category.id);
+			console.log(category.data());
+		})
 
+	})
+	.catch(err => {console.log(err);})
+}
 
 
 
