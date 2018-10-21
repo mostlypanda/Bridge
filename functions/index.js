@@ -34,9 +34,10 @@ app.put('/onBoard', isAuthenticated, onBoard);
 app.get('/auth', isAuthenticated, function (req, res) {
 	res.send("isAuthenticated");
 })
-
+app.get('/fakeCategoryFetch', fakeCategoryFetch);
 // inventory
-app.post('/user/inventory', isAuthenticated, addInventory2);
+app.post('/user/inventory', isAuthenticated, addInventory3);
+app.post('/user/items',isAuthenticated,addItems);
 // app.post('/user/inventory', addInventory);
 app.get('/inventory', getAllInventory);
 //location
@@ -44,7 +45,7 @@ app.get('/inventory', getAllInventory);
 
 
 
-app.get('/getAll', getAllItems);
+app.get('/getAll', getAllItems2);
 app.get('/fetchShops', fdata3);
 app.post('/addData', addData);
 
@@ -97,6 +98,71 @@ function fakeItemFetch(req, res)
     }
 };
 	res.json(data);
+}
+
+
+function fakeCategoryFetch(req, res)
+{
+	let data=req.query;
+	if(data.dis==undefined || data.longitude ==undefined || data.latitude==undefined || data.subCategory == undefined)
+	{
+		res.status(400).json({
+			success:false,
+			message:"send appropriate data",
+		})
+	}
+	let det={
+	    "success": true,
+	    "empty": false,
+	    "data": {
+	        "shops": [
+	            {
+	                "shopDetails": {
+	                    "picture": "https://lh4.googleusercontent.com/-m9hJqU9SLjw/AAAAAAAAAAI/AAAAAAAAJGE/0CE8K7Mv73k/s96-c/photo.jpg",
+	                    "latitude": 29.9644716,
+	                    "onBoard": false,
+	                    "longitude": 76.8487841,
+	                    "email": "guarav.arora7@gmail.com",
+	                    "name": "Gaurav arora",
+	                    "sub": "108780721264792096827"
+	                },
+	                "itemsAvailable": [
+	                    {
+	                        "price": 54,
+	                        "itemName": "O' yes",
+	                        "subCategory": "packed food"
+	                    }
+	                ]
+	            },
+	            {
+	                "shopDetails": {
+	                    "address": "NIT Kurukshetra",
+	                    "picture": "https://lh6.googleusercontent.com/-WkvaQW08RVA/AAAAAAAAAAI/AAAAAAAAAyY/pDXixMQm8_8/s96-c/photo.jpg",
+	                    "latitude": 29.9673457,
+	                    "onBoard": true,
+	                    "longitude": 76.8597841,
+	                    "email": "ankurcharan98@gmail.com",
+	                    "name": "Ankur Charan",
+	                    "shopName": "ZIg Zag",
+	                    "sub": "108353553073304068595"
+	                },
+	                "itemsAvailable": [
+	                    {
+	                        "subCategory": "packedfood",
+	                        "price": "19",
+	                        "itemName": "kurkure"
+	                    },
+	                    {
+	                        "price": "18",
+	                        "itemName": "lays",
+	                        "subCategory": "packedfood"
+	                    }
+	                ]
+	            }
+	        ]
+	    }
+	};
+	res.json(res.json(det));
 }
 
 
@@ -169,15 +235,16 @@ function addInventory2(req, res) {
 		subCategory=modifiedName(subCategory);
 		itemName=modifiedName(itemName);
 		console.log(itemName);
+		console.log(subCategory);
 		verify.push(userInventory.collection(subCategory).doc(itemName).set(items[item]));
-		db.collection('items').doc(itemName).get((snap)=>{
+		verify.push(db.collection('items').doc(itemName).get((snap)=>{
 			if(snap.exists===false)
 			{
 				db.collection('items').doc(itemName).set({
 					subCategory:subCategory,
 				})
 			}
-		});
+		}));
 	}
 
 	Promise.all(verify).then(() => {
@@ -197,8 +264,106 @@ function addInventory2(req, res) {
 
 
 
+function addInventory3(req, res) {
+
+	console.log(req.body);
+
+	//let sub = req.body.items[0].sub;
+	let sub = req.body.sub;
+	let userInventory = shops.doc(sub);
+
+	let verify;
+
+	let items = req.body.items;
+	for(item in items) {
+
+		console.log(items[item]);
+
+		// let category = items[item].category;
+		let subCategory = items[item].subCategory;
+		let itemName = items[item].itemName;
+		subCategory=modifiedName(subCategory);
+		itemName=modifiedName(itemName);
+
+		verify = userInventory.collection(subCategory).doc(itemName).set(items[item]);
+		// db.collection('items').doc(itemName).get((snap)=>{
+		// 	if(snap.exists===false)
+		// 	{
+		// 		db.collection('items').doc(itemName).set({
+		// 			category:category,
+		// 			subCategory:subCategory,
+		// 		})
+		// 	}
+		// });
+	}
+
+	verify.then(() => {
+		return res.status(200).json({
+			success: true,
+			message: "items added"
+		})
+	})
+	.catch(() => {
+
+		return res.status(500).json({
+			success: false,
+			message: "could not add all items"
+		})
+	})
+}
 
 
+
+function addItems(req, res) {
+
+	// console.log(req.body);
+
+	//let sub = req.body.items[0].sub;
+	let sub = req.body.sub;
+	let userInventory = shops.doc(sub);
+
+	let verify=[];
+	let tempItems =[];
+	let items = req.body.items;
+	for(item in items) {
+
+		// console.log(items[item]);
+
+		// let category = items[item].category;
+		let subCategory = items[item].subCategory;
+		let itemName = items[item].itemName;
+		subCategory=modifiedName(subCategory);
+		itemName=modifiedName(itemName);
+		// db.collection('items').doc(itemName).get((snap)=>{
+		// 	console.log("here");
+		// 	if(snap.exists===false)
+		// 	{
+		// 		console.log('empty');
+		// 		tempItems.push(item);
+		// 	}
+		// });
+		verify.push(
+			db.collection('items').doc(itemName).set({
+				subCategory:subCategory,
+			})
+		);
+	}
+	// console.log(tempItems);
+
+	Promise.all(verify).then(() => {
+		return res.status(200).json({
+			success: true,
+			message: "items added"
+		})
+	})
+	.catch(() => {
+
+		return res.status(500).json({
+			success: false,
+			message: "could not add all items"
+		})
+	})
+}
 
 
 
@@ -701,7 +866,7 @@ function getAllItems(req, res){
 
 				let shop = {};
 				shop["shopDetails"] = doc.data();
-				shop["itemAvailable"] = new Array();
+				shop["itemsAvailable"] = new Array();
 
 				let ref = shops.doc(doc.data().sub).collection("inventory").doc(category).collection(subCategory);
 				verify = ref.get()
@@ -713,11 +878,11 @@ function getAllItems(req, res){
 						let itemData = itemDoc.data();
 						console.log(itemData);
 
-						shop["itemAvailable"].push(itemData);
+						shop["itemsAvailable"].push(itemData);
 
 					})
 
-					if(shop["itemAvailable"].length > 0) {
+					if(shop["itemsAvailable"].length > 0) {
 
 						data["shops"].push(shop);
 					}
@@ -752,6 +917,86 @@ function getAllItems(req, res){
 
 
 
+function getAllItems2(req, res){
+
+	const lat = parseFloat(req.query.dis)*0.0144927536231884;
+	const lon = parseFloat(req.query.dis)*0.0181818181818182;
+
+	let latitude = req.query.latitude;
+	let longitude = req.query.longitude;
+	// let category = req.query.category;
+	let subCategory = req.query.subCategory;
+
+	var query = shops.where('latitude', '>=', parseFloat(latitude)-lat).where('latitude', '<=', parseFloat(latitude) + lat).get()
+	.then(snapshot => {
+
+		let data = {
+			shops: []
+		};
+
+		let verify=[];
+
+		snapshot.forEach(doc => {
+
+			if((doc.data().longitude <= parseFloat(longitude) + lon) && (doc.data().longitude >= parseFloat(longitude) - lon)) {
+
+				let shop = {};
+				shop["shopDetails"] = doc.data();
+				shop["itemsAvailable"] = new Array();
+
+				let ref = shops.doc(doc.data().sub).collection(subCategory);
+				verify.push(ref.get()
+				.then((snap)=>{
+
+
+					snap.forEach((itemDoc)=>{
+
+						let itemData = itemDoc.data();
+						console.log(itemData);
+
+						shop["itemsAvailable"].push(itemData);
+
+					})
+
+					if(shop["itemsAvailable"].length > 0) {
+
+						data["shops"].push(shop);
+					}
+				})
+				.catch(err => {
+					console.log(err);
+					res.json({success:false,
+					message:"could not find anything for this subcategory",
+					empty:true});
+				}))
+
+			}
+		})
+		Promise.all(verify).then(()=>{
+			let empty=true;
+			if(data["shops"].length>0)
+			empty=false;
+			return res.status(200).json({
+				success: true,
+				empty:empty,
+				data: data,
+			});
+		})
+		.catch(err => {console.log(err);})
+
+	})
+	.catch(err => {
+
+		console.log('Error getting documents', err);
+
+		return res.json({
+			mes:"flas",
+			success:false,
+			empty:true,
+		})
+
+	});
+}
 
 
 
