@@ -39,7 +39,7 @@ app.get('/fakeCategoryFetch', fakeCategoryFetch);
 app.post('/user/inventory', isAuthenticated, addInventory3);
 app.post('/user/items',isAuthenticated,addItems);
 // app.post('/user/inventory', addInventory);
-app.get('/inventory', getAllInventory);
+app.get('/inventory',isAuthenticated, getAllInventory);
 //location
 // app.get('/location', nearby);
 
@@ -1021,21 +1021,27 @@ function getAllItems2(req, res){
 
 
 function getAllInventory(req, res){
-	let verify;
+	let verify=[];
 	let data={items:[]};
-	let sub=req.query.sub;
-	console.log(sub);
-	console.log(inventory);
-	verify=shops.doc(sub).collection(inventory).get()
-	.then((categories)=>{
-		categories.forEach((category)=>{
-			//categoryData=category.data()
-			console.log(category.id);
-			console.log(category.data());
+	let sub=req.body.sub;
+	let subCategory=req.query.subCategory;
+	subCategory=modifiedName(subCategory);
+	// console.log(sub);
+	// console.log(inventory);
+	verify.push(db.collection('shops').doc(sub).collection(subCategory).get()
+	.then((docs)=>{
+		// console.log(subcategories.collection());
+		docs.forEach((doc)=>{
+			data["items"].push(doc.data());
 		})
-
 	})
-	.catch(err => {console.log(err);})
+	.catch(err => {console.log(err);}))
+	Promise.all(verify).then(()=>{
+		res.json({
+			success:true,
+			data:data,
+		});
+	});
 }
 
 
