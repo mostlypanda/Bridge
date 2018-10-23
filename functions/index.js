@@ -31,7 +31,7 @@ const inventory = "inventory";
 
 //cors
 app.use(cors({
-	origin: true	
+	origin: true
 }));
 
 // authentication
@@ -43,7 +43,7 @@ app.get('/auth', isAuthenticated, function (req, res) {
 app.get('/fakeCategoryFetch', fakeCategoryFetch);
 // inventory
 app.post('/user/inventory', isAuthenticated, addInventory3);
-app.post('/user/items',isAuthenticated,addItems);
+app.post('/items',isAuthenticated,addItems);
 // app.post('/user/inventory', addInventory);
 app.get('/inventory',isAuthenticated, getAllInventory);
 //location
@@ -63,7 +63,11 @@ app.use('/', function(req, res) {
 		message: "use another routes"
 	})
 })
-
+app.use(function(req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	next();
+});
 //const lat = 10*0.0144927536231884;
 //const lon = 10*0.0181818181818182;
 //const lat = 1;
@@ -130,7 +134,9 @@ function fakeCategoryFetch(req, res)
 	                    "longitude": 76.8487841,
 	                    "email": "guarav.arora7@gmail.com",
 	                    "name": "Gaurav arora",
-	                    "sub": "108780721264792096827"
+	                    "sub": "108780721264792096827",
+						"shopName":"arora gift gallery",
+						"address":"railway road",
 	                },
 	                "itemsAvailable": [
 	                    {
