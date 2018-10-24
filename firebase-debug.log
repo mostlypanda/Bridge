@@ -1,0 +1,37 @@
+[debug] [2018-10-24T10:01:29.689Z] ----------------------------------------------------------------------
+[debug] [2018-10-24T10:01:29.691Z] Command:       /usr/bin/node /usr/bin/firebase serve
+[debug] [2018-10-24T10:01:29.691Z] CLI Version:   5.1.1
+[debug] [2018-10-24T10:01:29.691Z] Platform:      linux
+[debug] [2018-10-24T10:01:29.691Z] Node Version:  v8.12.0
+[debug] [2018-10-24T10:01:29.691Z] Time:          Wed Oct 24 2018 15:31:29 GMT+0530 (IST)
+[debug] [2018-10-24T10:01:29.691Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-10-24T10:01:29.698Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-10-24T10:01:29.698Z] > authorizing via signed-in user
+[debug] [2018-10-24T10:01:29.698Z] [iam] checking project excaliburtut for permissions ["firebase.projects.get"]
+[debug] [2018-10-24T10:01:29.699Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2018-10-24T10:01:29.699Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2018-10-24T10:01:31.557Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-24T10:01:31.572Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/excaliburtut:testIamPermissions  
+
+[debug] [2018-10-24T10:01:34.695Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-24T10:01:34.698Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/excaliburtut  
+ 
+[debug] [2018-10-24T10:01:38.134Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from '/media/ankurcharan/EA84A99384A96335/Intel Inside/Web Dev/Techspardha/Bridge'...
+[info] 
+[info] i  functions: Preparing to emulate functions.
+[debug] [2018-10-24T10:01:38.690Z] Fetching environment
+[debug] [2018-10-24T10:01:38.691Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/749026176874:getServerAppConfig  
+ 
+[debug] [2018-10-24T10:01:38.692Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/749026176874/clients/_:getWebAppConfig  
+ 
+[debug] [2018-10-24T10:01:40.204Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-24T10:01:40.205Z] Starting @google-cloud/functions-emulator
+[debug] [2018-10-24T10:01:40.286Z] <<< HTTP RESPONSE 200
+[info] i  hosting: Serving hosting files from: public
+[info] ✔  hosting: Local server: http://localhost:5000
+[debug] [2018-10-24T10:01:41.231Z] Parsing function triggers
+[info] ✔  functions: api: http://localhost:5001/excaliburtut/us-central1/api
