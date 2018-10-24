@@ -259,6 +259,11 @@ function fakeCategoryFetch(req, res)
 	res.json(res.json(det));
 }
 
+
+
+
+
+
 function addInventory(req, res) {
 
 	console.log(req.body);
@@ -277,7 +282,7 @@ function addInventory(req, res) {
 		// let category = items[item].category;
 		let subCategory = items[item].subCategory;
 		let itemName = items[item].itemName;
-		subCategory=modifiedName(subCategory);
+		
 		itemName=modifiedName(itemName);
 
 		verify = userInventory.collection(subCategory).doc(itemName).set(items[item]);
@@ -327,7 +332,7 @@ function addItems(req, res) {
 		// let category = items[item].category;
 		let subCategory = items[item].subCategory;
 		let itemName = items[item].itemName;
-		subCategory=modifiedName(subCategory);
+		
 		itemName=modifiedName(itemName);
 		// db.collection('items').doc(itemName).get((snap)=>{
 		// 	console.log("here");
@@ -665,7 +670,7 @@ function fdata3(req, res) {
 	.then((itemSnap)=>{
 		// category=itemSnap.data().category;
 		subCategory=itemSnap.data().subCategory;
-		subCategory=modifiedName(subCategory);
+		
 
 	}).catch(err => {
 		console.log(err);
@@ -1041,7 +1046,7 @@ function getAllInventory(req, res){
 	let data={items:[]};
 	let sub=req.body.sub;
 	let subCategory=req.query.subCategory;
-	subCategory=modifiedName(subCategory);
+	
 	// console.log(sub);
 	// console.log(inventory);
 	verify.push(db.collection('shops').doc(sub).collection(subCategory).get()
@@ -1086,7 +1091,7 @@ function googleLogin(req, response) {
 	let idToken = req.body.idToken;						// get idToken
 	if(idToken === undefined) {							// if idToken is not sent in request
 
-		return res.status(400).json({					// bad request
+		return response.status(400).json({					// bad request
 			success: false,
 			message: "Usage: [POST] idToken=token"
 		})
