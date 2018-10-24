@@ -1,0 +1,215 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow-x:hidden;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+
+
+a.cta {
+    font-family: 'Montserrat', sans-serif;
+
+  display: block;
+  position: absolute;
+  height: 50px;
+  line-height: 50px;
+  width: 120px;
+  text-align: center;
+  color: #fff;
+  text-decoration: none;
+  left: 50%;
+  bottom: 20%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  border: 2px solid #fff;
+  font-size: 0.75em;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+a.cta:before {
+  content: "";
+  background: #fff;
+  height: 0;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transition: 300ms all ease-in-out;
+}
+ a.cta:hover:before {
+  height: 4px;
+  /* color: #fff; */
+}
+
+.cta:hover{
+  /* height: 4px; */
+  color: #fff;
+  cursor: pointer;
+}
+
+.container_dup {
+  background: #fff;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.container_dup .one-half {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+}
+.container_dup .one-half.left {
+  left: 0;
+  background: url("http://andrewerrico.com/jura-panorama.jpg") center center no-repeat;
+  background-size: cover;
+}
+.container_dup .one-half.left:before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 0, 120, 0.5);
+  position: absolute;
+}
+.container_dup .one-half.right {
+  right: 0;
+  background: url("https://images.unsplash.com/photo-1517134191118-9d595e4c8c2b") center center no-repeat;
+  background-size: cover;
+}
+.container_dup .one-half.right:before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: rgba(25, 120, 220, 0.5);
+  position: absolute;
+}
+.container_dup .one-half.left, .container_dup .one-half.right {
+  transition: 500ms all ease-in-out;
+}
+.container_dup .one-half.left:before, .container_dup .one-half.right:before {
+  transition: 500ms all ease-in-out;
+}
+.container_dup.left-is-hovered .left {
+  width: 85%;
+}
+.container_dup.left-is-hovered .left h1:after {
+  width: 100%;
+}
+.container_dup.left-is-hovered .right {
+  width: 15%;
+}
+.container_dup.left-is-hovered .right:before {
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 2;
+}
+.container_dup.right-is-hovered .right {
+  width: 85%;
+}
+.container_dup.right-is-hovered .right h1:after {
+  width: 100%;
+}
+.container_dup.right-is-hovered .left {
+  width: 15%;
+}
+.container_dup.right-is-hovered .left:before {
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 2;
+}
+.color
+{
+    font-family: 'Montserrat', sans-serif;
+    color: #ffffff;
+}
+.introdiv
+{
+
+    margin-bottom: : 2px;
+    height: 100%;
+    /* background-color: #ffffff; */
+    /* border: 1px solid black; */
+     /* opacity: 0; */
+    /* filter: alpha(opacity=60)  */
+    background: url("./hero-bg.jpg") center center no-repeat;
+    background-size: cover;
+
+
+
+}
+/* .introdiv:before{
+    content: "";
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    position: relative;
+} */
+
+.btn.btn-default
+{
+    background-color: Transparent;
+    color: white;
+}
+
+
+
+
+/* .navbar-inverse {
+  color: rgb(255,0,0);
+} */
+.navbar-brand{
+
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+
+}
+.h1text
+{
+    color: rgba(255,255,255,3.4);
+    font-size: 5em;
+    font-family: 'Lobster', cursive;
+}
+/* .h3text
+{
+
+} */
+body::-webkit-scrollbar {
+    width: 0.8em;
+    z-index: 1;
+}
+
+body::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.6);
+    z-index: 2;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid darkgrey;
+  z-index: 2;
+}
+.searchhere {
+  color: #fff;
+  position: relative;
+  position: absolute;
+  left: 50%;
+  top: 20%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  white-space: nowrap;
+}
+.searchhere:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 4px;
+  left: 0;
+  bottom: -8px;
+  background: #fff;
+  transition: 500ms all ease-in-out;
+}
