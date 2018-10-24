@@ -1,43 +1,86 @@
-<!DOCTYPE HTML>
 <!DOCTYPE html>
 <html>
 <head>
-	<title>sign in</title>
-
-
-	<script src="https://apis.google.com/js/platform.js" async defer></script>
-	<meta name="google-signin-client_id" content="129763278792-8hft3a0bb1n7u2e6kosiirtdq1ptkbr3.apps.googleusercontent.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* Center the loader */
+        #loader {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            z-index: 1;
+            width: 50px;
+            height: 50px;
+            margin: -75px 0 0 -75px;
+            border: 6px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 6px solid #3498db;
+            width: 50px;
+            height: 50px;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+        }
+        
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Add animation to "page content" */
+        .animate-bottom {
+            position: relative;
+            -webkit-animation-name: animatebottom;
+            -webkit-animation-duration: 1s;
+            animation-name: animatebottom;
+            animation-duration: 1s
+        }
+        
+        @-webkit-keyframes animatebottom {
+            from { bottom:-100px; opacity:0 } 
+            to { bottom:0px; opacity:1 }
+        }
+        
+        @keyframes animatebottom { 
+            from{ bottom:-100px; opacity:0 } 
+            to{ bottom:0; opacity:1 }
+        }
+        
+        #myDiv {
+            display: none;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
+    
+    <div id="loader"></div>
+    
+    <div style="display:none;" id="myDiv" class="animate-bottom">
+        <h2>Tada!</h2>
+        <p>Some text in my newly loaded page..</p>
+    </div>
+    
+    <script>
+        var myVar;
 
-	<div class="g-signin2" data-onsuccess="onSignIn"></div>
-	<a href="#" onclick="signOut();">Sign out</a>
-
-	<script type="text/javascript">
-
-		function onSignIn(googleUser) {
-	  		var profile = googleUser.getBasicProfile();
-	  		console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-	  		console.log('Name: ' + profile.getName());
-	  		console.log('Image URL: ' + profile.getImageUrl());
-	  		console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-
-			// console.log("googleUser --", googleUser);
-
-			console.log("id - ",  googleUser.getAuthResponse().id_token);
-			console.log("access --", googleUser.getAuthResponse().access_token);
-		}
-
-	</script>
-
-
-	<script>
-		function signOut() {
-	    	var auth2 = gapi.auth2.getAuthInstance();
-	    		auth2.signOut().then(function () {
-	      		console.log('User signed out.');
-	  		});
-		}
-	</script>
+        window.addEventListener('load', function () {
+			myFunction();
+		})
+        
+        function myFunction() {
+            myVar = setTimeout(showPage, 3000);
+        }
+        
+        function showPage() {
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("myDiv").style.display = "block";
+        }
+    </script>
+    
 </body>
 </html>
