@@ -46,6 +46,7 @@ app.post('/user/inventory', isAuthenticated, addInventory3);
 app.post('/items',isAuthenticated,addItems);
 // app.post('/user/inventory', addInventory);
 app.get('/inventory',isAuthenticated, getAllInventory);
+app.get('/user/category', isAuthenticated, getSubCategories);
 //location
 // app.get('/location', nearby);
 
@@ -94,6 +95,30 @@ function fakeItemFetch(req, res)
                     "sub": "icy spicy",
                     "latitude": 29.969028
                 }
+            },{
+                "price": 20,
+                "data": {
+                    "longitude": 76.8425551,
+                    "shopName": "icy spicy",
+                    "sub": "icy spicy",
+                    "latitude": 29.969028
+                }
+            },{
+                "price": 20,
+                "data": {
+                    "longitude": 76.8425551,
+                    "shopName": "icy spicy",
+                    "sub": "icy spicy",
+                    "latitude": 29.969028
+                }
+            },{
+                "price": 20,
+                "data": {
+                    "longitude": 76.8425551,
+                    "shopName": "icy spicy",
+                    "sub": "icy spicy",
+                    "latitude": 29.969028
+                }
             },
             {
                 "price": 18,
@@ -127,6 +152,63 @@ function fakeCategoryFetch(req, res)
 	    "data": {
 	        "shops": [
 	            {
+	                "shopDetails": {
+	                    "picture": "https://lh4.googleusercontent.com/-m9hJqU9SLjw/AAAAAAAAAAI/AAAAAAAAJGE/0CE8K7Mv73k/s96-c/photo.jpg",
+	                    "latitude": 29.9644716,
+	                    "onBoard": false,
+	                    "longitude": 76.8487841,
+	                    "email": "guarav.arora7@gmail.com",
+	                    "name": "Gaurav arora",
+	                    "sub": "108780721264792096827",
+						"shopName":"arora gift gallery",
+						"address":"railway road",
+	                },
+	                "itemsAvailable": [
+	                    {
+	                        "price": 54,
+	                        "itemName": "O' yes",
+	                        "subCategory": "packed food"
+	                    }
+	                ]
+	            },{
+	                "shopDetails": {
+	                    "picture": "https://lh4.googleusercontent.com/-m9hJqU9SLjw/AAAAAAAAAAI/AAAAAAAAJGE/0CE8K7Mv73k/s96-c/photo.jpg",
+	                    "latitude": 29.9644716,
+	                    "onBoard": false,
+	                    "longitude": 76.8487841,
+	                    "email": "guarav.arora7@gmail.com",
+	                    "name": "Gaurav arora",
+	                    "sub": "108780721264792096827",
+						"shopName":"arora gift gallery",
+						"address":"railway road",
+	                },
+	                "itemsAvailable": [
+	                    {
+	                        "price": 54,
+	                        "itemName": "O' yes",
+	                        "subCategory": "packed food"
+	                    }
+	                ]
+	            },{
+	                "shopDetails": {
+	                    "picture": "https://lh4.googleusercontent.com/-m9hJqU9SLjw/AAAAAAAAAAI/AAAAAAAAJGE/0CE8K7Mv73k/s96-c/photo.jpg",
+	                    "latitude": 29.9644716,
+	                    "onBoard": false,
+	                    "longitude": 76.8487841,
+	                    "email": "guarav.arora7@gmail.com",
+	                    "name": "Gaurav arora",
+	                    "sub": "108780721264792096827",
+						"shopName":"arora gift gallery",
+						"address":"railway road",
+	                },
+	                "itemsAvailable": [
+	                    {
+	                        "price": 54,
+	                        "itemName": "O' yes",
+	                        "subCategory": "packed food"
+	                    }
+	                ]
+	            },{
 	                "shopDetails": {
 	                    "picture": "https://lh4.googleusercontent.com/-m9hJqU9SLjw/AAAAAAAAAAI/AAAAAAAAJGE/0CE8K7Mv73k/s96-c/photo.jpg",
 	                    "latitude": 29.9644716,
@@ -1023,7 +1105,28 @@ function getAllItems2(req, res){
 
 
 
-
+function getSubCategories(req, res)
+{
+	let data= {subCategories:[]};
+	let sub=req.body.sub;
+	let verify;
+	verify=db.collection('shops').doc(sub).getCollections().then((snapshot)=>{
+		// console.log(snapshot);
+		// console.log(snapshot.data());
+		snapshot.forEach((collection)=>{
+			// console.log(collection.data());
+			console.log(collection.id);
+			data["subCategories"].push(collection.id);
+		})
+	});
+	verify.then(()=>{
+		res.json({
+			success:true,
+			data:data,
+		});
+	}).catch(err => {console.log(err);})
+	// res.json(subCategories);
+}
 
 
 
