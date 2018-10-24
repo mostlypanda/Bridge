@@ -1,86 +1,150 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        /* Center the loader */
-        #loader {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            z-index: 1;
-            width: 50px;
-            height: 50px;
-            margin: -75px 0 0 -75px;
-            border: 6px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 6px solid #3498db;
-            width: 50px;
-            height: 50px;
-            -webkit-animation: spin 2s linear infinite;
-            animation: spin 2s linear infinite;
-        }
-        
-        @-webkit-keyframes spin {
-            0% { -webkit-transform: rotate(0deg); }
-            100% { -webkit-transform: rotate(360deg); }
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* Add animation to "page content" */
-        .animate-bottom {
-            position: relative;
-            -webkit-animation-name: animatebottom;
-            -webkit-animation-duration: 1s;
-            animation-name: animatebottom;
-            animation-duration: 1s
-        }
-        
-        @-webkit-keyframes animatebottom {
-            from { bottom:-100px; opacity:0 } 
-            to { bottom:0px; opacity:1 }
-        }
-        
-        @keyframes animatebottom { 
-            from{ bottom:-100px; opacity:0 } 
-            to{ bottom:0; opacity:1 }
-        }
-        
-        #myDiv {
-            display: none;
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
-    
-    <div id="loader"></div>
-    
-    <div style="display:none;" id="myDiv" class="animate-bottom">
-        <h2>Tada!</h2>
-        <p>Some text in my newly loaded page..</p>
-    </div>
-    
-    <script>
-        var myVar;
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <link rel="stylesheet" href="./searchdiv.css">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+        <script
+  src="https://code.jquery.com/jquery-3.3.1.js"
+  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+  crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
 
-        window.addEventListener('load', function () {
-			myFunction();
-		})
-        
-        function myFunction() {
-            myVar = setTimeout(showPage, 3000);
-        }
-        
-        function showPage() {
-            document.getElementById("loader").style.display = "none";
-            document.getElementById("myDiv").style.display = "block";
-        }
-    </script>
-    
-</body>
+var scrollLink = $(".btnbtn");
+
+// Smooth scrolling
+scrollLink.click(function(e) {
+e.preventDefault();
+$('body,html').animate({
+  scrollTop: $(this.hash).offset().top
+}, 700 );
+});
+
+// Active link switching
+$(window).scroll(function() {
+var scrollbarLocation = $(this).scrollTop();
+
+scrollLink.each(function() {
+
+  var sectionOffset = $(this.hash).offset().top - 200;
+
+  if ( sectionOffset <= scrollbarLocation ) {
+    $(this).parent().addClass('active');
+    $(this).parent().siblings().removeClass('active');
+  }
+})
+
+})
+
+})
+</script>
+
+  <!-- Latest compiled and minified CSS -->
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    </head>
+    <body>
+        <header class="navbar navbar-inverse navbar-fixed-top bs-docs-nav" role="banner">
+          <div class="container-fluid">
+              <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+                <a href="./divsearch.html" class="navbar-brand"><b>Bridge.</b></a>
+              </div>
+              <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                <ul class="nav navbar-nav navbar-right">
+
+                  <li class="dropdown">
+                    <!-- <a href="#" class="dropdown-toggle" data-toggle="dropdown">About <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                      <li><a href="#">Mission</a></li>
+                      <li><a href="#">Vision</a></li>
+                      <li><a href="#">Careers</a></li>
+                    </ul> -->
+                  </li>
+                  <li>
+                    <a href="./searchpage.html" style="color:white">Search</a>
+                  </li>
+                  <li style="margin-left:15px">
+                    <a href="#" style="color:white">Register Here</a>
+                  </li>
+                  <li style="margin-right:20px; margin-left:15px">
+                    <a href="#" style="color:white">Contact Us</a>
+                  </li>
+                </ul>
+              </nav>
+          </div>
+
+
+        </header>
+
+            <div class="introdiv">
+
+                <div class="container">
+                    <br><br><br><br><br><br><br>
+                    <h3 class="h3text" style="color: rgba(255,255,255,3.4)"><b><u>Welcome to Bridge</u></b><b>.</b></h3>
+                    <br>
+                    <h1 class="h1text" style="color: rgba(255,255,255,3.4)">
+                        We are a creative group <br>
+                        of people who design <br>
+                        influential brands and <br>
+                        digital experiences.
+                    </h1>
+                        <br><br><br>
+                        <a class="btn btn-default btn-lg search btnbtn" style="margin-right:10px" href="#middle1">
+                            What do you want?
+                        </button>
+                        <a class="btn btn-default btn-lg register btnbtn" href="#middle2">
+                            Register Your Business With Us
+                        </a>
+
+                </div>
+
+                </div> <!-- end home-content -->
+
+
+        <div class="container_dup">
+            <div class="one-half left" id="middle1">
+                <h1 class="color searchhere" >Are You A Customer?</h1>
+                <a class="cta searchbut">Search</a>
+            </div>
+            <div class="one-half right" id="middle2">
+                <h1 class="color searchhere">Are You A Businessman?</h1>
+                <a class="cta registerbut">Register</a>
+            </div>
+        </div>
+        <div class="searchbox" id="sbox">
+
+
+        </div>
+<script type="text/javascript">
+$l = $('.left')
+$r = $('.right')
+
+$l.mouseenter(function() {
+$('.container_dup').addClass('left-is-hovered');
+}).mouseleave(function() {
+$('.container_dup').removeClass('left-is-hovered');
+});
+
+$r.mouseenter(function() {
+$('.container_dup').addClass('right-is-hovered');
+}).mouseleave(function() {
+$('.container_dup').removeClass('right-is-hovered');
+});
+$(".searchbut").click(function()
+{
+    window.location.href="searchpage.html";
+});
+// console.log($(".header_wrap.fixed_nav_menu"));
+</script>
+    </body>
 </html>
