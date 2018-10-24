@@ -42,7 +42,7 @@ app.get('/auth', isAuthenticated, function (req, res) {
 })
 app.get('/fakeCategoryFetch', fakeCategoryFetch);
 // inventory
-app.post('/user/inventory', isAuthenticated, addInventory3);
+app.post('/user/inventory', isAuthenticated, addInventory);
 app.post('/items',isAuthenticated,addItems);
 // app.post('/user/inventory', addInventory);
 app.get('/inventory',isAuthenticated, getAllInventory);
@@ -259,106 +259,7 @@ function fakeCategoryFetch(req, res)
 	res.json(res.json(det));
 }
 
-
 function addInventory(req, res) {
-
-	console.log(req.body);
-
-	//let sub = req.body.items[0].sub;
-	let sub = req.body.sub;
-	let userInventory = shops.doc(sub).collection(inventory);
-
-	let verify;
-
-	let items = req.body.items;
-	for(item in items) {
-
-		console.log(items[item]);
-
-		let category = items[item].category;
-		let subCategory = items[item].subCategory;
-		let itemName = items[item].itemName;
-
-		verify = userInventory.doc(category).collection(subCategory).doc(itemName).set(items[item]);
-		db.collection('items').doc(itemName).get((snap)=>{
-			if(snap.exists===false)
-			{
-				db.collection('items').doc(itemName).set({
-					category:category,
-					subCategory:subCategory,
-				})
-			}
-		});
-	}
-
-	verify.then(() => {
-		return res.status(200).json({
-			success: true,
-			message: "items added"
-		})
-	})
-	.catch(() => {
-
-		return res.status(500).json({
-			success: false,
-			message: "could not add all items"
-		})
-	})
-}
-
-
-
-
-function addInventory2(req, res) {
-
-	console.log(req.body);
-
-	//let sub = req.body.items[0].sub;
-	let sub = req.body.sub;
-	let userInventory = shops.doc(sub);
-
-	let verify=[];
-
-	let items = req.body.items;
-	for(item in items) {
-
-		console.log(items[item]);
-
-		let subCategory = items[item].subCategory;
-		let itemName = items[item].itemName;
-		subCategory=modifiedName(subCategory);
-		itemName=modifiedName(itemName);
-		console.log(itemName);
-		console.log(subCategory);
-		verify.push(userInventory.collection(subCategory).doc(itemName).set(items[item]));
-		verify.push(db.collection('items').doc(itemName).get((snap)=>{
-			if(snap.exists===false)
-			{
-				db.collection('items').doc(itemName).set({
-					subCategory:subCategory,
-				})
-			}
-		}));
-	}
-
-	Promise.all(verify).then(() => {
-		return res.status(200).json({
-			success: true,
-			message: "items added"
-		})
-	})
-	.catch(() => {
-
-		return res.status(500).json({
-			success: false,
-			message: "could not add all items"
-		})
-	})
-}
-
-
-
-function addInventory3(req, res) {
 
 	console.log(req.body);
 
@@ -1176,22 +1077,24 @@ function getAllInventory(req, res){
 
 
 
-
+// logs in a user
+// recieves id_token from Google Auth
+// body 
+// as idToken
 function googleLogin(req, response) {
 
-	let idToken = req.body.idToken;
-	if(idToken === undefined) {
+	let idToken = req.body.idToken;						// get idToken
+	if(idToken === undefined) {							// if idToken is not sent in request
 
-		return res.status(400).json({
+		return res.status(400).json({					// bad request
 			success: false,
 			message: "Usage: [POST] idToken=token"
 		})
 	}
 
-	request(googleUrl + idToken, {json: true}, (err, res, body) => {
+	request(googleUrl + idToken, {json: true}, (err, res, body) => {			// request google api for user data
 
-		if(err) {
-			// not acdeptable
+		if(err) {														// error in request
 			return response.status(406).json({
 				success: false,
 				message: "could not make request to google",
@@ -1199,31 +1102,31 @@ function googleLogin(req, response) {
 			})
 		}
 
-		console.log(body);
+		// console.log(body);
 
-		if(body.error_description !== undefined) {
-
-			return response.status(400).json({
+		if(body.error_description !== undefined) {				// error in idToken 
+																// so user error_description is retuned in the body
+			return response.status(400).json({					// unauthenticated requeest
 				message: "empty/invalid token",
 				error: 'unauthenticated request',
 				success: false,
 			})
 		}
 
-		let sub = body.sub;
-		let name = body.name;
-		let email = body.email;
-		let picture = body.picture;
+		let sub = body.sub;									// user UID
+		let name = body.name;								// user name
+		let email = body.email;								// user email
+		let picture = body.picture;							// user picture url
 
-		console.log(sub, name, email, picture);
+		// console.log(sub, name, email, picture);
 
-		shops.doc(body.sub).get()
+		shops.doc(body.sub).get()							// get user data from the database
 		.then((snapshot) => {
 			// console.log(snapshot.data());
 
-			if(snapshot.data() === undefined) {
+			if(snapshot.data() === undefined) {				// if this is a new user
 
-				let userData = {
+				let userData = {							// set userData
 					name: name,
 					sub: sub,
 					email: email,
@@ -1231,45 +1134,42 @@ function googleLogin(req, response) {
 					onBoard: false
 				}
 
-				shops.doc(sub).set(userData);
+				shops.doc(sub).set(userData);				// insert new user data in database 
 
-				const token = jwt.sign(userData, config.key);
+				const token = jwt.sign(userData, config.key);		// generate jwt token for user
 
 				let data = {token: token};
 
-				return response.status(200).json({
+				return response.status(200).json({			// send response to client
 					success: true,
 					onBoard: false,
 					data: data
 				})
 			}
-			else {
+			else {											// user already exists
 
-				// console.log("user exits");
-				// console.log(snapshot.data());
-
-				let userData = {
+				let userData = {								// set user data
 					name: snapshot.data().name,
 					sub: snapshot.data().sub,
 					email: snapshot.data().email,
 					picture: snapshot.data().picture,
-					onBoard: snapshot.data().onBoard
+					onBoard: snapshot.data().onBoard			// if he is onBoard or not
 				}
 
-				if(snapshot.data().onBoard === true) {
+				if(snapshot.data().onBoard === true) {					// if he is already on Board
 
-					userData.latitude = snapshot.data().latitude;
-					userData.longitude = snapshot.data().longitude;
-					userData.address = snapshot.data().address;
-					userData.shopName = snapshot.data().shopName;
+					userData.latitude = snapshot.data().latitude;		// set latitude
+					userData.longitude = snapshot.data().longitude;		// set longitude
+					userData.address = snapshot.data().address;			// set address
+					userData.shopName = snapshot.data().shopName;		// set shopName
 				}
 
-				const token = jwt.sign(userData, config.key);
+				const token = jwt.sign(userData, config.key);			// generate jwt token
 
-				let data = {token: token};
+				let data = {token: token};	
 
-				return response.status(200).json({
-					success: true,
+				return response.status(200).json({						// send response to client
+					success: true,										
 					onBoard: snapshot.data().onBoard,
 					data: data
 				})
@@ -1288,39 +1188,44 @@ function googleLogin(req, response) {
 }
 
 
+
+// to get user onBoard
+// accepts additional information
+// shop name
+// coordinates/ location of business
+// written address
 function onBoard(req, res) {
 
-	console.log(req.body);
-
-	let shopName = req.body.shopName;
+	// user information in body
+	let shopName = req.body.shopName;								// accepts parameters
 	let latitude = parseFloat(req.body.latitude);
 	let longitude = parseFloat(req.body.longitude);
 	let address = req.body.address;
 	let sub = req.body.sub;
 
-	if(shopName === undefined || latitude === undefined || longitude === undefined || address === undefined) {
-		return res.status(400).json({
+	if(shopName === undefined || latitude === undefined || longitude === undefined || address === undefined) {			// if any of the parameters are undefined
+		return res.status(400).json({																	// bad request
 			success: false,
 			message: "Usage: [PUT] shopName=name&latitude=lat&longitude=lon&address=addr"
 		})
 	}
 
-	shops.doc(sub).get()
+	shops.doc(sub).get()								// get user from database
 	.then((snapshot) => {
 
-		if(snapshot.data() === undefined) {
-			// user does not exist
-			return res.status(403).json({
+		if(snapshot.data() === undefined) {				// user does not exist
+
+			return res.status(403).json({				// forbidden						
 				success: false,
 				message: "user does not exist"
 			})
 		}
 
-		let userData = snapshot.data();
+		let userData = snapshot.data();					// user data
 
-		if(userData.onBoard === false) {
+		if(userData.onBoard === false) {				// if he is not onBoard
 
-			shops.doc(sub).update({
+			shops.doc(sub).update({						// update information
 				onBoard: true,
 				latitude: latitude,
 				longitude: longitude,
@@ -1328,7 +1233,7 @@ function onBoard(req, res) {
 				shopName: shopName
 			})
 
-			let userData = {
+			let userData = {							// jwt token data
 				name: snapshot.data().name,
 				sub: snapshot.data().sub,
 				email: snapshot.data().email,
@@ -1340,21 +1245,21 @@ function onBoard(req, res) {
 				shopName: shopName
 			}
 
-			console.log(userData);
+			// console.log(userData);
 
-			const token = jwt.sign(userData, config.key);
+			const token = jwt.sign(userData, config.key);			// generate token
 
 			let data = {token};
 
-			return res.status(200).json({
+			return res.status(200).json({				// send resposnse to client
 				success: true,
 				message: "user onBoard now",
 				data: data
 			})
 		}
-		else {
+		else {														// already onBoard
 
-			return res.status(405).json({
+			return res.status(405).json({							// not allowed
 				success: false,
 				message: "not allowed, already onBoard"
 			})
@@ -1362,4 +1267,5 @@ function onBoard(req, res) {
 	})
 }
 
+// export functions
 exports.api = functions.https.onRequest(app);
