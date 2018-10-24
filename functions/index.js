@@ -326,7 +326,7 @@ function addInventory2(req, res) {
 
 		let subCategory = items[item].subCategory;
 		let itemName = items[item].itemName;
-		subCategory=modifiedName(subCategory);
+		
 		itemName=modifiedName(itemName);
 		console.log(itemName);
 		console.log(subCategory);
@@ -376,7 +376,7 @@ function addInventory3(req, res) {
 		// let category = items[item].category;
 		let subCategory = items[item].subCategory;
 		let itemName = items[item].itemName;
-		subCategory=modifiedName(subCategory);
+		
 		itemName=modifiedName(itemName);
 
 		verify = userInventory.collection(subCategory).doc(itemName).set(items[item]);
@@ -426,7 +426,7 @@ function addItems(req, res) {
 		// let category = items[item].category;
 		let subCategory = items[item].subCategory;
 		let itemName = items[item].itemName;
-		subCategory=modifiedName(subCategory);
+		
 		itemName=modifiedName(itemName);
 		// db.collection('items').doc(itemName).get((snap)=>{
 		// 	console.log("here");
@@ -764,7 +764,7 @@ function fdata3(req, res) {
 	.then((itemSnap)=>{
 		// category=itemSnap.data().category;
 		subCategory=itemSnap.data().subCategory;
-		subCategory=modifiedName(subCategory);
+		
 
 	}).catch(err => {
 		console.log(err);
@@ -1140,7 +1140,7 @@ function getAllInventory(req, res){
 	let data={items:[]};
 	let sub=req.body.sub;
 	let subCategory=req.query.subCategory;
-	subCategory=modifiedName(subCategory);
+	
 	// console.log(sub);
 	// console.log(inventory);
 	verify.push(db.collection('shops').doc(sub).collection(subCategory).get()
