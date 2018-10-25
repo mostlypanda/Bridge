@@ -1,123 +1,233 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<title>OnBoard</title>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>onBoard</title>
-	
-	
-	<!-- bootstrap -->
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" 
-	integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" 
-	crossorigin="anonymous">
-	<!-- js -->
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" 
-	integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" 
-	crossorigin="anonymous">
-	</script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" 
-	integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" 
-	crossorigin="anonymous">
-	</script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" 
-	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" 
-	crossorigin="anonymous">
-	</script>
-
-	<!-- google script -->
-	<script src="https://apis.google.com/js/platform.js" async defer></script>
-	<meta name="google-signin-client_id" content="749026176874-leoib3qol529bu8ct2b664mr0q1bcpk2.apps.googleusercontent.com">
-
-	<!-- jquery -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
 	<script
 	src="https://code.jquery.com/jquery-3.3.1.js"
 	integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
 	crossorigin="anonymous"></script>
-
-	<!-- google maps -->
-	<!-- <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script> -->
-
-	<!-- my css -->
-	<link rel="stylesheet" href="onBoard.css">
-
-	<script src="onBoard.js"></script>
-</head>
-<body>
-	
-	
-	
-		
-		
-	</div>
-
-
-
-
-	<!-- geolocation a CB IDE 36293-->
-	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
-
-	<div id="locationButton">
-		<button id="" class="btn btn-primary" onclick="getLocation()">Get My Location</button>
-	</div>
-
-	<!-- where location is printed -->
-	<p id="location"></p>
-
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-54dh3gyA4rnmx2j5fmp23PE-M0pPt6w&libraries=places"></script>
 	<script type="text/javascript">
-		
+		let latitude;
+		let longitude;
 		google.maps.event.addDomListener(window,'load',intialize);
-		
+		let url= "https://us-central1-excaliburtut.cloudfunctions.net/api/OnBoard";
 		function intialize()
 		{
 			var autocomplete = new google.maps.places.Autocomplete(document.getElementById('txtautocomplete'));
 			google.maps.event.addListener(autocomplete,'place_changed',function() {
+				// $('#fetchlocation').attr("disabled",true);
 				var place = autocomplete.getPlace();
-				var location = "<b>Location</b>: " + place.formatted_address + "<br/>";
+				console.log(place.geometry.location);
 				var str = place.geometry.location;
+				latitude=str.lat();
+				longitude=str.lng();
+				console.log(latitude, longitude);
 				// location+=str;
 				// var res=str.split(",","(",")"," ");
-				location +="<b>Latitude</b>: " +  place.geometry.location.lat() + "<br/>";
-				location += "<b>Longitude</b>: " + place.geometry.location.lng();
-				document.getElementById('location').innerHTML = location;
+				// location +="<b>Latitude</b>: " +  place.geometry.location.lat() + "<br/>";
+				// location += "<b>Longitude</b>: " + place.geometry.location.lng();
+				// document.getElementById('location').innerHTML = location;
 				
 				
 				
 			});
 		};
+		$('#txtautocomplete').keypress(function(event){
+			if(event.keyCode==13){
+				$('#onboard').click();
+				$('#fetchlocation').addClass(hidden);
+				event.preventDefault();
+			}
+		})
+		console.log($('#fetchlocation'));
+		$(document).ready(function() {
+		$('#fetchlocation').click(function(){
+			getLocation();
+			console.log(latitude, longitude);
+
+		});	
+		});
+		$(document).ready(function() {
+		$('#onboard').click(function(){
+			let addr=$(".address").val();
+			let sn=$('.shopName').val();
+			let token = JSON.parse(localStorage.getItem('jwtToken'));
+			console.log(token);
+
+			if(token === null || token === undefined) {
+    		window.location.href = "./login.html";
+			}
+			// if(addr==undefined || sn == undefined || latitude==undefined || longitude == undefined)
+			// {
+			// 	alert('enter all parameters!');
+			// 	return;
+			// }	
+			console.log(addr);
+			console.log(sn);
+			console.log(latitude);
+			console.log(longitude);
+			$.ajax({
+			url:url,
+			type: "PUT",
+	        headers: {
+	            "Authorization": token,
+	            "Content-Type": "application/x-www-form-urlencoded"
+	        },
+	        data: {
+	            shopName: sn,
+	            address: addr,
+	            latitude: latitude,
+	            longitude: longitude
+	        },
+	        success: function(result, status) {
+
+	            if(status === 'success') {
+
+	                if(result["success"] === true) {
+
+	                    let newToken = result["data"]["token"];
+	                    localStorage.setItem('jwtToken', JSON.stringify(newToken));
+
+	                    window.location.href = "./login.html";
+
+	                }
+
+	            }
+	            console.log(result);
+	            console.log(status);
+
+	        },
+	        error: function(err) {
+
+	            if(err.status === 400) {
+	                alert("pass parameters");
+
+	                return;
+	            }
+
+	            if(err.status === 405) {
+	                alert("already onboard");
+	                return;
+	            }
+	            console.log("error occured");
+
+	        }
+
+	    })
+		})
+		});
 		
-		var x = document.getElementById("location");
 		function getLocation() {
+			console.log('debug');
 			if (navigator.geolocation) {
 				navigator.geolocation.watchPosition(showPosition);
 			} else {
-				x.innerHTML = "Geolocation is not supported by this browser.";
+				alert("Geolocation is not supported by this browser.");
 			}
 		}
 		function showPosition(position) {
+
 			
-			x.innerHTML = "Latitude: " + position.coords.latitude +
-			"<br>Longitude: " + position.coords.longitude;
-			
-			lat = position.coords.latitude;
-			lon = position.coords.longitude;
-			
-			console.log(lat, lon);
+			latitude = position.coords.latitude;
+			longitude = position.coords.longitude;
+
 		}
 	</script>
+<!--===============================================================================================-->
+</head>
+<body>
+	
+	<div class="limiter">
+		<div class="container-login100" style="background-image: url('images/bg-01.jpg');">
+			<div class="wrap-login100">
+				<form class="login100-form validate-form">
+					<span class="login100-form-logo">
+						<i class="zmdi zmdi-landscape"></i>
+					</span>
 
-	<span>Location:</span><input type="text" id="txtautocomplete" style="width:200px" placeholder="enter the address" /><br/>
+					<span class="login100-form-title p-b-34 p-t-27">
+						Just one step away!
+					</span>
 
-	<br><br>
+					<div class="wrap-input100 validate-input" >
+						<input class="input100 shopName" type="text" name="shopName" placeholder="Shop Name" required>
+						<span class="focus-input100" data-placeholder="&#xf207;"></span>
+					</div>
+					<div class="wrap-input100 validate-input" >
+						<input class="input100 address" type="text" name="address" placeholder="Address" required>
+						<span class="focus-input100" data-placeholder="&#xf276;"></span>
+					</div>
 
-	<label for="address">Address - </label>
-	<input placeholder="type your address" type="text" id="address">
-	<br>
-	<label for="shopName">Shop Name - </label>
-	<input placeholder="type shop name" type="text" id="shopName">
+					
+					<div class="wrap-input100 validate-input"  >
+						<input class="input100" type="text" id="txtautocomplete" name="location" placeholder="Enter location else hit Locate me!">
+						<span class="focus-input100" data-placeholder="&#xf124;"></span>
+					</div>
 
-	<br>
+					<div class="container-login100-form-btn">
+						<button class="login100-form-btn " id="fetchlocation" type="button">
+							Locate Me!
+						</button>
+						&nbsp;&nbsp;&nbsp;
+						<button class="login100-form-btn " id="onboard" type="button">
+							OnBoard
+						</button>
+					</div>
 
-	<button class="btn btn-primary" onclick="clicked()">Submit</button>
+					<!-- <div class="container-login100-form-btn">
+						
+					</div> -->
+
+				</form>
+			</div>
+		</div>
+	</div>
+	
+
+	<div id="dropDownSelect1"></div>
+	
+	<!-- <span>Location:</span><input type="text" id="txtautocomplete" style="width:200px" placeholder="enter the address" /><br/> -->
+<!--===============================================================================================-->
+	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/bootstrap/js/popper.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/daterangepicker/moment.min.js"></script>
+	<script src="vendor/daterangepicker/daterangepicker.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/countdowntime/countdowntime.js"></script>
+
+<!--===============================================================================================-->
+	<!-- <script src="js/main.js"></script> -->
+
 </body>
 </html>
