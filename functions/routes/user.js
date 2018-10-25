@@ -25,6 +25,15 @@ FOR USER TO ADD/UPDATE INVENTORY
 *********************************/
 
 function addInventory(req, res) {
+
+	if(req.body.onBoard === false) {
+
+		return res.status(401).json({
+			success: false,
+			message: "user not onBoard"
+		})
+
+	}
 														// use data in body
 	let sub = req.body.sub;								// get UID from body
 	let userInventory = shops.doc(sub);					// refrence to user inventory
@@ -77,7 +86,7 @@ function getAllInventory(req, res) {
 		items: []
 	};
 
-	let sub=req.body.sub;			// get UID from headers in body
+	let sub = req.body.sub;			// get UID from headers in body
 
 	let subCategory = req.query.subCategory;  		// get category from request
 

@@ -16,9 +16,12 @@ let shops = db.collection('shops');
 app.post('/', addItems);
 
 
-// auxiliary function to add items
+/**********************************
+***********************************
+AUXILIARY FUNCTION TO ADD ITEMS 
+***********************************
+**********************************/
 // in items node of the database
-// items will also added in items node
 // for easy searching
 // accepts same data as addInventory()
 function addItems(req, res) {
@@ -61,6 +64,7 @@ function addItems(req, res) {
 	})
 }
 
+// TO MODIFY ANY STRING ACCORDING TO OUR NEED
 function modifiedName(x) {
 	
 	x = x.toLowerCase(x);

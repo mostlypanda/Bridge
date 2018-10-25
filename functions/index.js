@@ -19,24 +19,14 @@ const isAuthenticated = require('./middlewares/auth');
 const userRoutes = require('./routes/user');
 const authRoutes = require('./routes/login');
 const itemRoutes = require('./routes/items');
+const allItemsRoutes = require('./routes/allItems');
+const itemSearchRoute = require('./routes/itemSearch');
 
 // express app
 const app = express();
 app.use(bodyParser.urlencoded({extended:false}));
 
-// constants
-let shops = db.collection('shops');
-let items = db.collection('items');
-
-const latitudeConstant = 0.0144927536231884;
-const longitudeConstant = 0.0181818181818182;
-
-// strings
-const googleUrl = 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=';
-const inventory = "inventory";
-
 // ROUTES
-
 //cors
 app.use(cors({
 	origin: true
@@ -47,31 +37,19 @@ app.use('/', authRoutes);
 app.use('/user', isAuthenticated, userRoutes);
 // items
 app.use('/items',isAuthenticated, itemRoutes);
-
-
-app.get('/auth', isAuthenticated, function (req, res) {
-	res.send(req.body);
-})
-
-// inventory
-//location
-// app.get('/location', nearby);
-
-
-
-app.get('/getAll', getAllItems);
-app.get('/fetchShops', fetchShops);
-// app.post('/addData', addData);
+// get all items in category
+app.use('/getAll', allItemsRoutes);
+// fetch shops with desired product
+app.use('/fetchShops', itemSearchRoute);
 
 app.use('/', function(req, res) {
 	
 	return res.json({
+		success: false,
 		status: "connected",
 		message: "use another routes"
 	})
 })
-
-
 
 app.use(function(req, res, next) {
 	res.header("Access-Control-Allow-Origin", "*");
@@ -79,271 +57,5 @@ app.use(function(req, res, next) {
 	next();
 });
 
-
-
-function modifiedName(x) {
-	
-	x = x.toLowerCase(x);
-	x = x.replace(/[^a-zA-Z0-9 ]/g, "");
-	x = x.replace(/\s/g,'');
-	return x;
-}
-
-
-
-
-
-
-
-
-
-/*********************************************
-*
-*
-*		*****************************
-		Function to get nearby shops
-		having desired product
-*
-*
-*
-*/
-
-
-// Usage: distance in miles, product name in URL patameters as:
-// dis=&item=
-
-
-function fetchShops(req, res) {
-
-	const lat = parseFloat(req.query.dis)*0.0144927536231884;			//distance box
-	const lon = parseFloat(req.query.dis)*0.0181818181818182;			//distance box
-
-	let data = {
-		shops:[]
-	};
-
-	let subCategory = '';
-	let item = req.query.item;
-	item = modifiedName(item);	//changing item name as per database
-
-	let latitude = parseFloat(req.query.latitude);	//parsing to float
-	let longitude = parseFloat(req.query.longitude);
-
-	let prom;
-	let ref = items.doc(item);
-	prom = ref.get()
-	.then((itemSnap) => {
-
-		subCategory=itemSnap.data().subCategory;		// getting item's subCategory
-	})
-	.catch((err) => {
-		console.log(err);
-		res.json({
-			success:false,
-			empty:true,
-			message:"could not find anything about that item",
-			data:data
-		})
-	});
-
-	prom.then(() => {
-
-		let temp=[];
-
-		let query = shops.where('latitude', '>=', latitude - lat).where('latitude', "<=", latitude + lat).get()		//qyuery at desired latitude
-		.then(function(snapshot) {
-
-			if(snapshot.exists === false) {
-				console.log('snap null');
-				return res.status(200).json({
-					success:true,
-					empty:true,
-					message:'no shops',
-					data:data,
-				})
-			}
-
-			snapshot.forEach((doc) => {
-
-				let docData = doc.data();
-
-				if(docData.longitude <= longitude + lon && docData.longitude >= longitude -lon) {		//query at longitude
-
-					let itemRef = shops.doc(docData.sub).collection(subCategory).doc(item);			//getting details of shops and price
-					temp.push(
-						itemRef.get()
-						.then((snapshot) => {
-
-							if(snapshot.exists === true) {
-
-							let details = {
-								price: snapshot.data().price,
-								data: doc.data()
-							}
-
-							data["shops"].push(details);
-						}})
-						.catch((err) => {
-
-							let message = {
-								err: err,
-								message: "could not get shops data"
-							}
-							console.log(message);
-
-							res.status(400).json(message);
-						})
-					)
-
-				}
-
-			})
-
-			Promise.all(temp)
-			.then(function(){
-
-				let empty = false;
-				if(data["shops"].length === 0)
-					empty = true;
-				console.log(data["shops"].length);
-
-				return res.status(200).json({
-					success: true,
-					empty:empty,
-					data: data,
-				});
-			})
-			.catch((err) => {
-				console.log(err);
-			})
-		})
-		.catch((err) => {
-			console.log("catch", err);
-		})
-	}).catch((err) => {
-		console.log(err);
-	})
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// return all items in a category in nearby shops
-// [GET] request
-// latitude
-// longitude
-// dis
-// subCategory
-function getAllItems(req, res){
-
-	const lat = parseFloat(req.query.dis)*0.0144927536231884;		// get coordinates constant
-	const lon = parseFloat(req.query.dis)*0.0181818181818182;
-
-	let latitude = req.query.latitude;			// get latitude
-	let longitude = req.query.longitude;		// longitude
-	let subCategory = req.query.subCategory;	// subCategory
-
-	// get nearby shops
-	var query = shops.where('latitude', '>=', parseFloat(latitude)-lat).where('latitude', '<=', parseFloat(latitude) + lat).get()
-	.then(snapshot => {
-
-		let data = {
-			shops: []					// will store the items available
-		};
-
-		let promises = [];
-		snapshot.forEach((doc) => {
-
-			if((doc.data().longitude <= parseFloat(longitude) + lon) && (doc.data().longitude >= parseFloat(longitude) - lon)) {
-
-				let shop = {};
-				shop["shopDetails"] = doc.data();
-				shop["itemsAvailable"] = new Array();
-
-				// these are the nearby shops
-				// in cube
-				let ref = shops.doc(doc.data().sub).collection(subCategory);
-
-				let x = ref.get()								// get all items in subCategory
-				.then((snap)=>{
-
-					snap.forEach((itemDoc) => {					// traverse on each item
-
-						let itemData = itemDoc.data();
-						// console.log(itemData);
-
-						shop["itemsAvailable"].push(itemData);		// push items to array
-					})
-
-					if(shop["itemsAvailable"].length > 0) {			// if for each shop - items are nont availabke - then dont push
-
-						data["shops"].push(shop);
-					}
-				})
-				.catch((err) => {							// error getting items in subCategory
-					// console.log(err);
-
-					return res.json({success:false,
-					message:"could not find anything for this subcategory",
-					empty:true});
-				});
-
-				promises.push(x);
-
-			}
-		})
-
-		Promise.all(promises)							// if all the promises are resolved
-		.then(() => {
-			let empty = true;
-			if(data["shops"].length > 0)
-				empty = false;
-
-			return res.status(200).json({
-				success: true,
-				empty:empty,
-				data: data,
-			});
-		})
-		.catch((err) => {
-
-			return res.status(500).json({
-				success: false,
-				message: "error getting shops",
-				err: err
-			})
-
-		})
-
-	})
-	.catch((err) => {
-
-		return res.json({
-			message:"error getting nearby shops",
-			success:false,
-			empty:true,
-			err: err
-		})
-
-	});
-}
-
-
-
-
-
-
-
-
-// export functions
+// EXPORT functions
 exports.api = functions.https.onRequest(app);
