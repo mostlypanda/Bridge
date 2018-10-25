@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>OnBoard</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+	<script
+	src="https://code.jquery.com/jquery-3.3.1.js"
+	integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+	crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="./css/master.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-54dh3gyA4rnmx2j5fmp23PE-M0pPt6w&libraries=places"></script>
+	<script type="text/javascript">
+		let latitude;
+		let longitude;
+		google.maps.event.addDomListener(window,'load',intialize);
+		let url= "https://us-central1-excaliburtut.cloudfunctions.net/api/OnBoard";
+		function intialize()
+		{
+			var autocomplete = new google.maps.places.Autocomplete(document.getElementById('txtautocomplete'));
+			google.maps.event.addListener(autocomplete,'place_changed',function() {
+				// $('#fetchlocation').attr("disabled",true);
+				var place = autocomplete.getPlace();
+				console.log(place.geometry.location);
+				var str = place.geometry.location;
+				latitude=str.lat();
+				longitude=str.lng();
+				console.log(latitude, longitude);
+				// location+=str;
+				// var res=str.split(",","(",")"," ");
+				// location +="<b>Latitude</b>: " +  place.geometry.location.lat() + "<br/>";
+				// location += "<b>Longitude</b>: " + place.geometry.location.lng();
+				// document.getElementById('location').innerHTML = location;
+
+
+
+			});
+		};
+		$('#txtautocomplete').keypress(function(event){
+			if(event.keyCode==13){
+				$('#onboard').click();
+				$('#fetchlocation').addClass(hidden);
+				event.preventDefault();
+			}
+		})
+		console.log($('#fetchlocation'));
+		$(document).ready(function() {
+		$('#fetchlocation').click(function(){
+			getLocation();
+			console.log(latitude, longitude);
+
+		});
+		});
+		$(document).ready(function() {
+		$('#onboard').click(function(){
+			let addr=$(".address").val();
+			let sn=$('.shopName').val();
+			let token = JSON.parse(localStorage.getItem('jwtToken'));
+			console.log(token);
+
+			if(token === null || token === undefined) {
+    		window.location.href = "./login.html";
+			}
+			if(addr==undefined || sn == undefined || latitude==undefined || longitude == undefined)
+			{
+				alert('enter all parameters!');
+				return;
+			}
+			$.ajax({
+			url:url,
+			type: "PUT",
+	        headers: {
+	            "Authorization": token,
+	            "Content-Type": "application/x-www-form-urlencoded"
+	        },
+	        data: {
+	            shopName: sn,
+	            address: addr,
+	            latitude: latitude,
+	            longitude: longitude
+	        },
+	        success: function(result, status) {
+
+	            if(status === 'success') {
+
+	                if(result["success"] === true) {
+
+	                    let newToken = result["data"]["token"];
+	                    localStorage.setItem('jwtToken', JSON.stringify(newToken));
+
+	                    window.location.href = "./login.html";
+
+	                }
+
+	            }
+	            console.log(result);
+	            console.log(status);
+
+	        },
+	        error: function(err) {
+
+	            if(err.status === 400) {
+	                alert("pass parameters");
+
+	                return;
+	            }
+
+	            if(err.status === 405) {
+	                alert("already onboard");
+	                return;
+	            }
+	            console.log("error occured");
+
+	        }
+
+	    })
+		})
+		});
+
+		function getLocation() {
+			console.log('debug');
+			if (navigator.geolocation) {
+				navigator.geolocation.watchPosition(showPosition);
+			} else {
+				alert("Geolocation is not supported by this browser.");
+			}
+		}
+		function showPosition(position) {
+
+
+			latitude = position.coords.latitude;
+			longitude = position.coords.longitude;
+
+		}
+	</script>
+<!--===============================================================================================-->
+</head>
+<body>
+
+	<div class="limiter">
+		<div class="container-login100" style="background-image: url('images/bg-01.jpg');">
+			<div class="wrap-login100">
+				<form class="login100-form validate-form">
+					<span class="login100-form-logo">
+						<i class="zmdi zmdi-landscape"></i>
+					</span>
+
+					<span class="login100-form-title p-b-34 p-t-27">
+						Just one step away!
+					</span>
+
+					<div class="wrap-input100 validate-input" >
+						<input class="input100 shopName" type="text" name="shopName" placeholder="Shop Name" required>
+						<span class="focus-input100" data-placeholder="&#xf207;"></span>
+					</div>
+					<div class="wrap-input100 validate-input" >
+						<input class="input100 address" type="text" name="address" placeholder="Address" required>
+						<span class="focus-input100" data-placeholder="&#xf276;"></span>
+					</div>
+
+
+					<div class="wrap-input100 validate-input"  >
+						<input class="input100" type="text" id="txtautocomplete" name="location" placeholder="Enter location else hit Locate me!">
+						<span class="focus-input100" data-placeholder="&#xf124;"></span>
+					</div>
+
+					<div class="container-login100-form-btn">
+						<button class="login100-form-btn " id="fetchlocation" type="button">
+							Locate Me!
+						</button>
+						&nbsp;&nbsp;&nbsp;
+						<button class="login100-form-btn " id="onboard" type="button">
+							OnBoard
+						</button>
+					</div>
+
+					<!-- <div class="container-login100-form-btn">
+
+					</div> -->
+
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+	<div id="dropDownSelect1"></div>
+
+	<!-- <span>Location:</span><input type="text" id="txtautocomplete" style="width:200px" placeholder="enter the address" /><br/> -->
+<!--===============================================================================================-->
+	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/bootstrap/js/popper.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/daterangepicker/moment.min.js"></script>
+	<script src="vendor/daterangepicker/daterangepicker.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/countdowntime/countdowntime.js"></script>
+
+<!--===============================================================================================-->
+	<!-- <script src="js/main.js"></script> -->
+
+</body>
+</html>

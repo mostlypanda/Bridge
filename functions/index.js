@@ -40,7 +40,7 @@ app.put('/onBoard', isAuthenticated, onBoard);
 app.get('/auth', isAuthenticated, function (req, res) {
 	res.send("isAuthenticated");
 })
-app.get('/fakeCategoryFetch', fakeCategoryFetch);
+
 // inventory
 app.post('/user/inventory', isAuthenticated, addInventory);
 app.post('/items',isAuthenticated,addItems);
@@ -53,10 +53,10 @@ app.get('/user/category', isAuthenticated, getSubCategories);
 
 
 app.get('/getAll', getAllItems);
-app.get('/fetchShops', fdata3);
+app.get('/fetchShops', fetchShops);
 // app.post('/addData', addData);
 
-app.get('/fakeItemFetch', fakeItemFetch)
+
 
 app.use('/', function(req, res) {
 	res.json({
@@ -69,10 +69,7 @@ app.use(function(req, res, next) {
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	next();
 });
-//const lat = 10*0.0144927536231884;
-//const lon = 10*0.0181818181818182;
-//const lat = 1;
-//const lon = 1;
+
 function modifiedName(x)
 {
 	x=x.toLowerCase(x);
@@ -81,205 +78,10 @@ function modifiedName(x)
 	return x;
 }
 
-function fakeItemFetch(req, res)
-{
-	let data=	{
-    "success": true,
-    "data": {
-        "shops": [
-            {
-                "price": 20,
-                "data": {
-                    "longitude": 76.8425551,
-                    "shopName": "icy spicy",
-                    "sub": "icy spicy",
-                    "latitude": 29.969028
-                }
-            },{
-                "price": 20,
-                "data": {
-                    "longitude": 76.8425551,
-                    "shopName": "icy spicy",
-                    "sub": "icy spicy",
-                    "latitude": 29.969028
-                }
-            },{
-                "price": 20,
-                "data": {
-                    "longitude": 76.8425551,
-                    "shopName": "icy spicy",
-                    "sub": "icy spicy",
-                    "latitude": 29.969028
-                }
-            },{
-                "price": 20,
-                "data": {
-                    "longitude": 76.8425551,
-                    "shopName": "icy spicy",
-                    "sub": "icy spicy",
-                    "latitude": 29.969028
-                }
-            },
-            {
-                "price": 18,
-                "data": {
-                    "latitude": 29.9702308,
-                    "longitude": 76.8782767,
-                    "shopName": "baba store",
-                    "sub": "baba store"
-                }
-            }
-        ]
-    }
-};
-	res.json(data);
-}
-
-
-function fakeCategoryFetch(req, res)
-{
-	let data=req.query;
-	if(data.dis==undefined || data.longitude ==undefined || data.latitude==undefined || data.subCategory == undefined)
-	{
-		res.status(400).json({
-			success:false,
-			message:"send appropriate data",
-		})
-	}
-	let det={
-	    "success": true,
-	    "empty": false,
-	    "data": {
-	        "shops": [
-	            {
-	                "shopDetails": {
-	                    "picture": "https://lh4.googleusercontent.com/-m9hJqU9SLjw/AAAAAAAAAAI/AAAAAAAAJGE/0CE8K7Mv73k/s96-c/photo.jpg",
-	                    "latitude": 29.9644716,
-	                    "onBoard": false,
-	                    "longitude": 76.8487841,
-	                    "email": "guarav.arora7@gmail.com",
-	                    "name": "Gaurav arora",
-	                    "sub": "108780721264792096827",
-						"shopName":"arora gift gallery",
-						"address":"railway road",
-	                },
-	                "itemsAvailable": [
-	                    {
-	                        "price": 54,
-	                        "itemName": "O' yes",
-	                        "subCategory": "packed food"
-	                    }
-	                ]
-	            },{
-	                "shopDetails": {
-	                    "picture": "https://lh4.googleusercontent.com/-m9hJqU9SLjw/AAAAAAAAAAI/AAAAAAAAJGE/0CE8K7Mv73k/s96-c/photo.jpg",
-	                    "latitude": 29.9644716,
-	                    "onBoard": false,
-	                    "longitude": 76.8487841,
-	                    "email": "guarav.arora7@gmail.com",
-	                    "name": "Gaurav arora",
-	                    "sub": "108780721264792096827",
-						"shopName":"arora gift gallery",
-						"address":"railway road",
-	                },
-	                "itemsAvailable": [
-	                    {
-	                        "price": 54,
-	                        "itemName": "O' yes",
-	                        "subCategory": "packed food"
-	                    }
-	                ]
-	            },{
-	                "shopDetails": {
-	                    "picture": "https://lh4.googleusercontent.com/-m9hJqU9SLjw/AAAAAAAAAAI/AAAAAAAAJGE/0CE8K7Mv73k/s96-c/photo.jpg",
-	                    "latitude": 29.9644716,
-	                    "onBoard": false,
-	                    "longitude": 76.8487841,
-	                    "email": "guarav.arora7@gmail.com",
-	                    "name": "Gaurav arora",
-	                    "sub": "108780721264792096827",
-						"shopName":"arora gift gallery",
-						"address":"railway road",
-	                },
-	                "itemsAvailable": [
-	                    {
-	                        "price": 54,
-	                        "itemName": "O' yes",
-	                        "subCategory": "packed food"
-	                    }
-	                ]
-	            },{
-	                "shopDetails": {
-	                    "picture": "https://lh4.googleusercontent.com/-m9hJqU9SLjw/AAAAAAAAAAI/AAAAAAAAJGE/0CE8K7Mv73k/s96-c/photo.jpg",
-	                    "latitude": 29.9644716,
-	                    "onBoard": false,
-	                    "longitude": 76.8487841,
-	                    "email": "guarav.arora7@gmail.com",
-	                    "name": "Gaurav arora",
-	                    "sub": "108780721264792096827",
-						"shopName":"arora gift gallery",
-						"address":"railway road",
-	                },
-	                "itemsAvailable": [
-	                    {
-	                        "price": 54,
-	                        "itemName": "O' yes",
-	                        "subCategory": "packed food"
-	                    }
-	                ]
-	            },
-	            {
-	                "shopDetails": {
-	                    "address": "NIT Kurukshetra",
-	                    "picture": "https://lh6.googleusercontent.com/-WkvaQW08RVA/AAAAAAAAAAI/AAAAAAAAAyY/pDXixMQm8_8/s96-c/photo.jpg",
-	                    "latitude": 29.9673457,
-	                    "onBoard": true,
-	                    "longitude": 76.8597841,
-	                    "email": "ankurcharan98@gmail.com",
-	                    "name": "Ankur Charan",
-	                    "shopName": "ZIg Zag",
-	                    "sub": "108353553073304068595"
-	                },
-	                "itemsAvailable": [
-	                    {
-	                        "subCategory": "packedfood",
-	                        "price": "19",
-	                        "itemName": "kurkure"
-	                    },
-	                    {
-	                        "price": "18",
-	                        "itemName": "lays",
-	                        "subCategory": "packedfood"
-	                    }
-	                ]
-	            }
-	        ]
-	    }
-	};
-	res.json(res.json(det));
-}
 
 
 
 
-// to add user inventory
-// accepts user token in headers
-//
-// raw json data in body
-// {
-// 	"items": [
-// 		{
-// 			"itemName": "lays",
-// 			"subCategory": "Packed food",
-// 			"price": 8000
-// 		},
-// 		{
-// 			"itemName": "Adidas 2930",
-// 			"subCategory": "Sports Shoes",
-// 			"price": 8000
-// 		}
-// 	]
-// }
 function addInventory(req, res) {
 														// use data in body
 	let sub = req.body.sub;								// get UID from body
@@ -293,7 +95,7 @@ function addInventory(req, res) {
 
 		let subCategory = items[item].subCategory;		// get category
 		let itemName = items[item].itemName;			// get item name
-		
+
 		itemName = modifiedName(itemName);				// modify item name for key
 
 														// set item in database
@@ -330,15 +132,15 @@ function addItems(req, res) {
 	let sub = req.body.sub;						// user UID
 	let userInventory = shops.doc(sub);			// reference to use inventory
 
-	let promises = [];						// promises array to verify 
-		
+	let promises = [];						// promises array to verify
+
 	let items = req.body.items;				// get items from body
 
 	for(item in items) {					// traverse on items
 
 		let subCategory = items[item].subCategory;		// get item category
 		let itemName = items[item].itemName;			// get item name
-		
+
 		itemName = modifiedName(itemName);				// modify item name for key
 
 		let x = db.collection('items').doc(itemName).set({		// set item in items node
@@ -367,295 +169,26 @@ function addItems(req, res) {
 
 
 
-// function addData(req, res) {
+/*********************************************
+*
+*
+*		*****************************
+		Function to get nearby shops
+		having desired product
+*
+*
+*
+*/
 
-// 	var data=req.body.itemdata;
-// 	var item=req.body.item;
 
-// 	console.log("data ----", data);
-// 	console.log("-----");
-// 	console.log("item ----", item);
-// 	console.log("-----");
+// Usage: distance in miles, product name in URL patameters as:
+// dis=&item=
 
-// 	let shopName = data["shopName"];
-// 	let category = data["category"];
-// 	let subCategory = data["subCategory"];
-// 	let itemName = data["itemName"];
 
-// 	console.log(shopName, category, subCategory, itemName);
+function fetchShops(req, res) {
 
-// 	var ref= db.collection("shops").doc(shopName).collection("inventory").doc(category).collection(subCategory).doc(itemName);
-// 	ref.set(item);
-// 	//ref.add(data);
-// 	// ref= db.collection("shops").doc("baba store").collection("inventory").doc("food").collection("packed food").doc("lays");
-// 	// //console.log(ref);
-// 	// ref.get().then((snapshot)=>{
-// 	// 	console.log(snapshot.data());
-// 	// }).catch(err => {console.log(err);})
-// 	return res.send('added');
-// }
-
-
-
-
-// function fdata(req, res) {
-
-// 	// console.log("hey");
-
-// 	const lat = parseFloat(req.query.dis)*0.0144927536231884;
-// 	const lon = parseFloat(req.query.dis)*0.0181818181818182;
-
-// 	let subCategory = req.query.subCategory;
-// 	let category = req.query.category;
-// 	let item = req.query.item;
-// 	let latitude = parseFloat(req.query.latitude);
-// 	let longitude = parseFloat(req.query.longitude);
-
-// 	// console.log(subCategory, category, item, latitude, longitude);
-// 	let temp;
-
-// 	let query = shops.where('latitude', '>=', latitude - lat).where('latitude', "<=", latitude + lat).get()
-// 	.then(function(snapshot) {
-
-// 		let data = {shops: []};
-
-// 		if(snapshot.exists === false) {
-// 			console.log('snap null');
-// 		}
-
-// 		snapshot.forEach((doc) => {
-
-
-// 			let docData = doc.data();
-
-// 			// console.log(docData);
-
-// 			if(docData.longitude <= longitude + lon && docData.longitude >= longitude -lon) {
-
-// 				// console.log(doc.data());
-// 				// console.log("---------");
-// 				// console.log("---------");
-// 				let itemRef = shops.doc(docData.shopName).collection("inventory").doc(category).collection(subCategory).doc(item);
-// 				temp =itemRef.get()
-// 				.then((snapshot) => {
-
-// 					if(snapshot.exists === true) {
-
-// 						// return res.status(200).json({
-// 						// 	success: true,
-// 						// 	message: "no shops available"
-// 						// })
-
-
-// 					let details = {
-// 						price: snapshot.data().price,
-// 						data: doc.data()
-// 					}
-
-// 					console.log(snapshot.data());
-// 					console.log(doc.id, '=>', details);
-// 					// data["shops"].push(details);
-
-// 					data["shops"].push(details);
-// 					// return details;
-// 				}})
-// 				.catch((err) => {
-
-// 					let message = {
-// 						err: err,
-// 						message: "could not get shops data"
-// 					}
-// 					console.log(message);
-
-// 					res.status(400).json(message);
-// 				})
-
-// 			}
-
-// 		})
-
-// 		temp.then(function(){
-// 			console.log(temp);
-// 			return res.status(200).json({
-// 				success: true,
-// 				data: data
-// 			});
-// 		}).catch(err => {console.log(err);})
-
-
-// 	})
-// 	.catch((err) => {
-// 		console.log("catch", err);
-// 	})
-// }
-
-
-	// var query = citiesRef.where('latitude', '>=', parseFloat(req.query.latitude)-lat).where('latitude', '<=', parseFloat(req.query.latitude)+lat).get()
-	// .then(snapshot => {
-
-	// 	let data = {shop:[]};
-	// 	snapshot.forEach(doc => {
-	// 		console.log(doc.data().shopName+doc.data().longitude);
-	// if(doc.data().longitude<=parseFloat(req.query.longitude)+lon &&doc.data().longitude>=parseFloat(req.query.longitude)-lon){
-	// var ref= db.collection("shops").doc(doc.data().shopName).collection("inventory").doc(req.query.category).collection(req.query.subCategory).doc(req.query.item);
-	// 	//console.log(ref);
-	// 	ref.get().then((snapshot)=>{
-	// 		console.log(snapshot.data());
-	// 		if(snapshot.exists){
-	// 			console.log(doc.data().shopName+doc.data().longitude);
-	// 			console.log('heyyyy');
-	// 			let dat={
-	// 				price:snapshot.data().price,
-	// 				data:doc.data()
-	// 			}
-	// 			console.log(doc.id, '=>', dat);
-	// 			data.shop.push({
-	// 				data:dat,
-	// 			});
-	// 		}
-	// 		res.json(data);
-	// 	}).catch(err => {console.log(err);})
-	// 	} });
-	// res.json(data);
-	// 	})
-	// .catch(err => {
-
-
-	// 	console.log('Error getting documents', err);
-
-	// 	return res.json({
-	// 		mes:"flas"
-	// 	})
-
-	// });
-	// [END get_multiple]
-
-// function fdata2(req, res) {
-
-// 	// console.log("hey");
-
-// 	const lat = parseFloat(req.query.dis)*0.0144927536231884;
-// 	const lon = parseFloat(req.query.dis)*0.0181818181818182;
-
-// 	// let subCategory = req.query.subCategory;
-// 	// let category = req.query.category;
-// 	let subCategory='';
-// 	let category='';
-// 	let item = req.query.item;
-// 	let latitude = parseFloat(req.query.latitude);
-// 	let longitude = parseFloat(req.query.longitude);
-// 	let prom;
-// 	let ref=items.doc(item);
-// 	prom=ref.get()
-// 	.then((itemSnap)=>{
-// 		category=itemSnap.data().category;
-// 		subCategory=itemSnap.data().subCategory;
-
-// 	}).catch(err => {
-// 		console.log(err);
-// 		res.json({
-// 			success:false,
-// 			message:"could not find anything about that item"
-// 		})
-// 	});
-// 	prom.then(()=>{
-// 		console.log(category);
-// 		console.log(subCategory);
-// 		let temp=[];
-
-// 		let query = shops.where('latitude', '>=', latitude - lat).where('latitude', "<=", latitude + lat).get()
-// 		.then(function(snapshot) {
-
-// 			let data = {shops: []};
-
-// 			if(snapshot.exists === false) {
-// 				console.log('snap null');
-// 				res.json({
-// 					success:true,
-// 					data:data,
-// 				})
-// 			}
-
-// 			snapshot.forEach((doc) => {
-
-
-// 				let docData = doc.data();
-
-// 				// console.log(docData);
-
-// 				if(docData.longitude <= longitude + lon && docData.longitude >= longitude -lon) {
-
-// 					// console.log(doc.data());
-// 					// console.log("---------");
-// 					// console.log("---------");
-// 					let itemRef = shops.doc(docData.sub).collection("inventory").doc(category).collection(subCategory).doc(item);
-// 					temp.push(
-// 						itemRef.get()
-// 						.then((snapshot) => {
-
-// 							if(snapshot.exists === true) {
-
-// 								// return res.status(200).json({
-// 								// 	success: true,
-// 								// 	message: "no shops available"
-// 								// })
-
-
-// 							let details = {
-// 								price: snapshot.data().price,
-// 								data: doc.data()
-// 							}
-
-// 							//console.log(snapshot.data());
-// 							//console.log(doc.id, '=>', details);
-// 							// data["shops"].push(details);
-
-// 							data["shops"].push(details);
-// 							// return details;
-// 						}})
-// 						.catch((err) => {
-
-// 							let message = {
-// 								err: err,
-// 								message: "could not get shops data"
-// 							}
-// 							console.log(message);
-
-// 							res.status(400).json(message);
-// 						})
-// 					)
-
-// 				}
-
-// 			})
-
-// 			Promise.all(temp).then(function(){
-// 				//console.log(temp);
-// 				return res.status(200).json({
-// 					success: true,
-// 					data: data
-// 				});
-// 			}).catch(err => {console.log(err);})
-
-
-// 		})
-// 		.catch((err) => {
-// 			console.log("catch", err);
-// 		})
-// 	}).catch(err => {console.log(err);})
-// 	// console.log(subCategory, category, item, latitude, longitude);
-
-// }
-
-
-
-
-
-
-function fdata3(req, res) {
-
-	const lat = parseFloat(req.query.dis)*0.0144927536231884;
-	const lon = parseFloat(req.query.dis)*0.0181818181818182;
+	const lat = parseFloat(req.query.dis)*0.0144927536231884;			//distance box
+	const lon = parseFloat(req.query.dis)*0.0181818181818182;			//distance box
 
 	let data = {
 		shops:[]
@@ -663,17 +196,17 @@ function fdata3(req, res) {
 
 	let subCategory = '';
 	let item = req.query.item;
-	item = modifiedName(item);2
+	item = modifiedName(item);	//changing item name as per database
 
-	let latitude = parseFloat(req.query.latitude);
+	let latitude = parseFloat(req.query.latitude);	//parsing to float
 	let longitude = parseFloat(req.query.longitude);
-	
+
 	let prom;
 	let ref = items.doc(item);
 	prom = ref.get()
 	.then((itemSnap) => {
 
-		subCategory=itemSnap.data().subCategory;
+		subCategory=itemSnap.data().subCategory;		// getting item's subCategory
 	})
 	.catch((err) => {
 		console.log(err);
@@ -689,7 +222,7 @@ function fdata3(req, res) {
 
 		let temp=[];
 
-		let query = shops.where('latitude', '>=', latitude - lat).where('latitude', "<=", latitude + lat).get()
+		let query = shops.where('latitude', '>=', latitude - lat).where('latitude', "<=", latitude + lat).get()		//qyuery at desired latitude
 		.then(function(snapshot) {
 
 			if(snapshot.exists === false) {
@@ -706,9 +239,9 @@ function fdata3(req, res) {
 
 				let docData = doc.data();
 
-				if(docData.longitude <= longitude + lon && docData.longitude >= longitude -lon) {
+				if(docData.longitude <= longitude + lon && docData.longitude >= longitude -lon) {		//query at longitude
 
-					let itemRef = shops.doc(docData.sub).collection(subCategory).doc(item);
+					let itemRef = shops.doc(docData.sub).collection(subCategory).doc(item);			//getting details of shops and price
 					temp.push(
 						itemRef.get()
 						.then((snapshot) => {
@@ -740,12 +273,12 @@ function fdata3(req, res) {
 
 			Promise.all(temp)
 			.then(function(){
-			
+
 				let empty = false;
 				if(data["shops"].length === 0)
 					empty = true;
 				console.log(data["shops"].length);
-				
+
 				return res.status(200).json({
 					success: true,
 					empty:empty,
@@ -774,138 +307,6 @@ function fdata3(req, res) {
 
 
 
-// function getNearByShops(queryLatitude, queryLongitude, distanceInMiles, req, res) {
-
-// 	const latitude = parseFloat(queryLatitude);
-// 	const longitude = parseFloat(queryLongitude);
-// 	const distance = parseFloat(distanceInMiles);
-
-// 	const lat = distance * latitudeConstant;
-// 	const lon = distance * longitudeConstant;
-
-// 	let query = shops.where('latitude', '>=', latitude - lat).where('latitude', '<=', latitude + lat).get()
-// 	.then((snapshot) => {
-
-// 		if(snapshot === undefined) {
-// 			console.log(undefined);
-// 		}
-// 		let shops = new Array();
-
-// 		snapshot.forEach((shop) => {
-
-// 			let shopDetails = shop.data();
-
-// 			if((shopDetails.longitude >= longitude - lon) && (shopDetails.longitude <= longitude + lon)) {
-
-// 				// shop in local-area
-// 				console.longitude(shopDetails);
-// 				shops.push(shopDetails);
-// 			}
-
-// 		})
-
-// 		return res.status(200).json({
-// 			success: true,
-// 			message: "got shops",
-// 			data: shops
-// 		})
-// 		return true;
-
-// 	})
-// 	.catch((err) => {
-
-// 		// return true;
-// 		return res.status(500).json({
-// 			success: false,
-// 			err: err
-// 		})
-// 	})
-
-// }
-
-// function nearby(req, res) {
-
-// 	return getNearByShops(req.query.latitude, req.query.longitude, req.query.dis, req, res);
-
-// }
-
-
-
-
-
-// function getAllItems(req, res){
-
-// 	const lat = parseFloat(req.query.dis)*0.0144927536231884;
-// 	const lon = parseFloat(req.query.dis)*0.0181818181818182;
-
-// 	let latitude = req.query.latitude;
-// 	let longitude = req.query.longitude;
-// 	let category = req.query.category;
-// 	let subCategory = req.query.subCategory;
-
-// 	var query = shops.where('latitude', '>=', parseFloat(latitude)-lat).where('latitude', '<=', parseFloat(latitude) + lat).get()
-// 	.then(snapshot => {
-
-// 		let data = {
-// 			shops: []
-// 		};
-
-// 		let verify;
-
-// 		snapshot.forEach(doc => {
-
-// 			if((doc.data().longitude <= parseFloat(longitude) + lon) && (doc.data().longitude >= parseFloat(longitude) - lon)) {
-
-// 				let shop = {};
-// 				shop["shopDetails"] = doc.data();
-// 				shop["itemsAvailable"] = new Array();
-
-// 				let ref = shops.doc(doc.data().sub).collection("inventory").doc(category).collection(subCategory);
-// 				verify = ref.get()
-// 				.then((snap)=>{
-
-
-// 					snap.forEach((itemDoc)=>{
-
-// 						let itemData = itemDoc.data();
-// 						console.log(itemData);
-
-// 						shop["itemsAvailable"].push(itemData);
-
-// 					})
-
-// 					if(shop["itemsAvailable"].length > 0) {
-
-// 						data["shops"].push(shop);
-// 					}
-// 				})
-// 				.catch(err => {
-// 					console.log(err);
-// 					res.json({success:false,
-// 					message:"could not find anything for this subcategory"});
-// 				})
-
-// 			}
-// 		})
-// 		verify.then(()=>{
-// 			return res.status(200).json({
-// 				success: true,
-// 				data: data
-// 			});
-// 		})
-// 		.catch(err => {console.log(err);})
-
-// 	})
-// 	.catch(err => {
-
-// 		console.log('Error getting documents', err);
-
-// 		return res.json({
-// 			mes:"flas"
-// 		})
-
-// 	});
-// }
 
 
 
@@ -944,14 +345,14 @@ function getAllItems(req, res){
 				// these are the nearby shops
 				// in cube
 				let ref = shops.doc(doc.data().sub).collection(subCategory);
-				
+
 				let x = ref.get()								// get all items in subCategory
 				.then((snap)=>{
 
-					snap.forEach((itemDoc) => {					// traverse on each item	
+					snap.forEach((itemDoc) => {					// traverse on each item
 
-						let itemData = itemDoc.data();			
-						// console.log(itemData);		
+						let itemData = itemDoc.data();
+						// console.log(itemData);
 
 						shop["itemsAvailable"].push(itemData);		// push items to array
 					})
@@ -979,7 +380,7 @@ function getAllItems(req, res){
 			let empty = true;
 			if(data["shops"].length > 0)
 				empty = false;
-			
+
 			return res.status(200).json({
 				success: true,
 				empty:empty,
@@ -1016,10 +417,10 @@ function getSubCategories(req, res) {
 	let data = {					// stores categories of a user
 		subCategories: []
 	};
-	
+
 	let sub = req.body.sub;			// get UID from body
 
-	db.collection('shops').doc(sub).getCollections()		// get user categories
+	shops .doc(sub).getCollections()		// get user categories
 	.then((snapshot) => {
 
 		snapshot.forEach((collection) => {			// traverse on each category
@@ -1033,7 +434,7 @@ function getSubCategories(req, res) {
 				});
 	})
 	.catch((err) => {
-		
+
 		return res.status(500).json({				// error in fetching
 			success: false,
 			message: "could not fetch user categories in inventory",
@@ -1048,7 +449,7 @@ function getSubCategories(req, res) {
 // token in headers
 // [GET] subCategory = category
 function getAllInventory(req, res) {
-	
+
 	let data = {					// will store the items in that category
 		items: []
 	};
@@ -1059,11 +460,11 @@ function getAllInventory(req, res) {
 
 	db.collection('shops').doc(sub).collection(subCategory).get()		// get items in that category
 	.then((docs) => {
-	
-		docs.forEach((doc) => {						// for each item				
+
+		docs.forEach((doc) => {						// for each item
 			data["items"].push(doc.data());			// push item in array
 		})
-	
+
 		return res.status(200).json({				// send response to client
 			success:true,
 			data:data,
@@ -1081,7 +482,7 @@ function getAllInventory(req, res) {
 
 // logs in a user
 // recieves id_token from Google Auth
-// body 
+// body
 // as idToken
 function googleLogin(req, response) {
 
@@ -1106,7 +507,7 @@ function googleLogin(req, response) {
 
 		// console.log(body);
 
-		if(body.error_description !== undefined) {				// error in idToken 
+		if(body.error_description !== undefined) {				// error in idToken
 																// so user error_description is retuned in the body
 			return response.status(400).json({					// unauthenticated requeest
 				message: "empty/invalid token",
@@ -1136,7 +537,7 @@ function googleLogin(req, response) {
 					onBoard: false
 				}
 
-				shops.doc(sub).set(userData);				// insert new user data in database 
+				shops.doc(sub).set(userData);				// insert new user data in database
 
 				const token = jwt.sign(userData, config.key);		// generate jwt token for user
 
@@ -1168,10 +569,10 @@ function googleLogin(req, response) {
 
 				const token = jwt.sign(userData, config.key);			// generate jwt token
 
-				let data = {token: token};	
+				let data = {token: token};
 
 				return response.status(200).json({						// send response to client
-					success: true,										
+					success: true,
 					onBoard: snapshot.data().onBoard,
 					data: data
 				})
@@ -1217,7 +618,7 @@ function onBoard(req, res) {
 
 		if(snapshot.data() === undefined) {				// user does not exist
 
-			return res.status(403).json({				// forbidden						
+			return res.status(403).json({				// forbidden
 				success: false,
 				message: "user does not exist"
 			})

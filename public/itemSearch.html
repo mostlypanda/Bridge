@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+	<meta charset="utf-8">
+	<title>Bridge</title>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<script
+	src="https://code.jquery.com/jquery-3.3.1.js"
+	integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+	crossorigin="anonymous"></script>
+	<link href="https://fonts.googleapis.com/css?family=Acme" rel="stylesheet">
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCt7XCYmi9ubtPHi6UsaK7hk7DYUepRuvw"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="clearcss" id="animation">
+	<link id="loader" rel="stylesheet" href="./css/loader.css">
+	<script type="text/javascript">
+		let locations=[];
+		function getLocations(data)
+		{
+			let locations = new Array();
+
+			let x = data["data"]["shops"];
+
+			for(let sh in x) {
+
+				let location = new Array();
+
+				location[0] = x[sh]["data"].shopName + '\n Price: '+ x[sh].price;
+				location[1] = x[sh]["data"].latitude;
+				location[2] = x[sh]["data"].longitude;
+				location[3] = Number(sh)+1;
+
+				locations.push(location);
+
+			}
+			console.log(locations);
+			return locations;
+		}
+	</script>
+	<style media="screen">
+	.card{
+		padding: 10px;
+		border-radius: 10px;
+		border: 2px solid black;
+	}
+	button{
+		position: absolute;
+		right: 0;
+		margin-right: 20px;
+	}
+	.card:hover
+	{
+		opacity:1;
+		-webkit-transform: scale(1.15) translateX(-2px);
+		-ms-transform: scale(1.15);
+		transform: scale(1.15) translateX(-2px);
+		box-shadow:
+		1px 1px #373737,
+		2px 2px #373737,
+		3px 3px #373737,
+		4px 4px #373737,
+		5px 5px #373737,
+		6px 6px #373737;
+
+	}
+
+	.navbar-brand{
+
+		font-family: 'Montserrat', sans-serif;
+		text-transform: uppercase;
+
+	}
+
+</style>
+<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+</head>
+<body>
+
+	<div id="overlay">
+		<div class="circ">
+			<div class="load">Loading . . . </div>
+			<div class="hands"></div>
+			<div class="body"></div>
+			<div class="head">
+				<div class="eye"></div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="d-none" id="main-div">
+		<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="./index.html">BRIDGE.</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+
+				<div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+					<ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+						<li class="nav-item">
+							<a class="nav-link" href="./searchpage.html" style="color:white; text-decoration:none;">Search<span class="sr-only">(current)</span></a>
+						</li>
+						<li class="nav-item" style="margin-left:20px">
+							<a class="nav-link" href="#" style="color:white; text-decoration:none;">Register Here</a>
+						</li>
+						<li class="nav-item" style="margin-left:20px">
+							<a class="nav-link" href="#" style="color:white; text-decoration:none;">Contact Us</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<br>
+		<br><br><br>
+
+		<div class="main container">
+
+			<div id="map" style="height: 500px; width: auto;margin-bottom:40px;border:2px solid black; border-radius:10px">
+			</div>
+
+		</div>
+	</div>
+
+</body>
+
+<script type="text/javascript">
+	let originlat=localStorage.getItem('latitude');
+	let originlong=localStorage.getItem('longitude');
+	console.log(originlat, originlong);
+	let gitem=localStorage.getItem('item');
+	console.log(originlat, originlong, gitem);
+
+
+	function sortOrder(prop) {
+
+		return function(a, b) {
+
+			let priceA = parseInt(a["price"]);
+			let priceB = parseInt(b["price"]);
+
+			if(priceA > priceB) {
+				return 1;
+			}
+			else if(priceA < priceB) {
+				return -1;
+			}
+			return 0;
+		}
+	}
+
+	$(document).ready(function() {
+		var map = new google.maps.Map(document.getElementById('map'), {
+			zoom: 12,
+			center: new google.maps.LatLng(originlat, originlong),
+                // center: new google.maps.LatLng(Number(localStorage.getItem('latitude'),Number(localStorage.getItem('longitude')),
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+		var infowindow = new google.maps.InfoWindow();
+		var marker, j=0;
+		$.ajax({
+			type:"GET",
+			url:"http://us-central1-excaliburtut.cloudfunctions.net/api/fetchShops",
+			data:{
+				"dis":5,
+				"latitude":originlat,
+				"longitude":originlong,
+				"item":gitem,
+			},
+			success : function(result,status) {
+				if(status=="success")
+				{
+					console.log(result.data.shops);
+					if(result.empty===true)
+					{
+						$(".main").append("<h2 style='color:white; font-family: 'Acme', sans-serif;'>"+"Sorry , No data to display :("+"</h2>");
+						$("#map").addClass("d-none");
+					}
+					else {
+						console.log(result["data"]["shops"]);
+						result["data"]["shops"].sort(sortOrder("price"));
+						console.log(result["data"]["shops"]);
+						
+						let n = result.data.shops.length;
+						let i;
+						let j=0;
+						console.log(locations);
+						locations= getLocations(result);
+						console.log(locations);
+						console.log('hey');
+						marker = new google.maps.Marker({
+                      // position: new google.maps.LatLng(Number(localStorage.getItem('latitude'),Number(localStorage.getItem('longitude')),
+                      position: new google.maps.LatLng(originlat, originlong),
+                      map: map,
+                      icon:"http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                  });
+						google.maps.event.addListener(marker, 'mouseover', (function (marker, j) {
+							return function () {
+								infowindow.setContent('My Location');
+								infowindow.open(map, marker);
+							}
+						})(marker, j));
+						for (j = 0; j < locations.length; j++) {
+							marker = new google.maps.Marker({
+								position: new google.maps.LatLng(locations[j][1], locations[j][2]),
+								map: map,
+                      // icon:"http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                  });
+							google.maps.event.addListener(marker, 'mouseover', (function (marker, j) {
+								return function () {
+									infowindow.setContent(locations[j][0]);
+									infowindow.open(map, marker);
+								}
+							})(marker, j));
+						}
+
+						for(i=0;i<n;i++)
+						{
+							if(i%2==0)
+							{
+								var a = $("<div class='row'></div>");
+							}
+							var b = $("<div class='col-lg-6 col-md-6 col-xs-6'></div>");
+							var v = $("<div class='container py-3'></div>")
+							var x = $("<div class='card'></div>");
+							var header = $("<div class='card-header'></div>");
+							let temp = i.toString();
+							header.append("<h2><i class='fa fa-shopping-cart' aria-hidden='true'></i>&nbsp;"+result.data.shops[i].data.shopName+"<button type='button' class='btn btn-primary btn-lg' id='"+temp+"'>Navigate&nbsp;<i class='fa fa-map-marker'></i></button></h2>");
+							x.append(header);
+							var y = $("<div class='card-content'><div class='card-block px-3'></div></div>");
+							y.append("<br><h3>Address : "+result.data.shops[i].data.address+"</h3>");
+							y.append("<hr>");
+							y.append("<h4 class='card-title'>Price : &#x20b9;"+result.data.shops[i].price+"</h4>");
+							y.append("<div class='card-footer'></div>");
+							x.append(y);
+							v.append(x);
+							b.append(v);
+							a.append(b);
+							if(i%2!=0){
+								$('.main').append(a);
+							}
+						}
+						if(n%2!=0)
+						{
+							$('.main').append(a);
+						}
+						$("button").click(function() {
+							let id = this.id;
+							id=parseInt(id);
+							console.log(id);
+							let desLat = result.data.shops[id].data.latitude;
+							let desLon = result.data.shops[id].data.longitude;
+							let origin1=originlat+","+originlong;
+							let destination1=desLat+","+desLon;
+							console.log(origin1);
+							window.location.href = "https://www.google.com/maps/dir/?api=1&origin="+origin1+"&destination="+destination1+"";
+						})
+					}
+
+				}
+				else {
+					console.log("unsucessful");
+				}
+			},
+		});
+	});
+
+</script>
+
+
+<script type="text/javascript">
+
+	setTimeout(function () {
+		$("#loader").attr("href", "clearcss");
+		$("#loader").addClass("d-none");
+		$("#main-div").removeClass("d-none");
+		$("#animation").attr("href", "./css/master.css");
+	}, 3000);
+
+
+
+</script>
+
+</html>

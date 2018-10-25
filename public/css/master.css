@@ -1,0 +1,14 @@
+body{
+          /*position:fixed;*/
+           background:url(http://subtlepatterns2015.subtlepatterns.netdna-cdn.com/patterns/footer_lodyas.png);
+          animation:50s scroll infinite linear;
+          top:0;
+          left:0;
+          width:100%;
+         height:100%;
+        }
+        @keyframes scroll{
+         100%{
+             background-position:0px -3000px;
+            }
+        }
