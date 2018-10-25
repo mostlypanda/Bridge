@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({extended:false}));
 // strings
 const googleUrl = 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=';
 
-// constants
+// database constants
 let shops = db.collection('shops');
 
 // ROUTES

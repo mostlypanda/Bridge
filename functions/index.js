@@ -18,6 +18,7 @@ const config = require('./config');
 const isAuthenticated = require('./middlewares/auth');
 const userRoutes = require('./routes/user');
 const authRoutes = require('./routes/login');
+const itemRoutes = require('./routes/items');
 
 // express app
 const app = express();
@@ -40,10 +41,13 @@ const inventory = "inventory";
 app.use(cors({
 	origin: true
 }));
-
 // authentications
 app.use('/', authRoutes);
+// user
 app.use('/user', isAuthenticated, userRoutes);
+// items
+app.use('/items',isAuthenticated, itemRoutes);
+
 
 app.get('/auth', isAuthenticated, function (req, res) {
 	res.send(req.body);
@@ -53,7 +57,6 @@ app.get('/auth', isAuthenticated, function (req, res) {
 //location
 // app.get('/location', nearby);
 
-app.post('/items',isAuthenticated, addItems);
 
 
 app.get('/getAll', getAllItems);
@@ -61,7 +64,8 @@ app.get('/fetchShops', fetchShops);
 // app.post('/addData', addData);
 
 app.use('/', function(req, res) {
-	res.json({
+	
+	return res.json({
 		status: "connected",
 		message: "use another routes"
 	})
@@ -77,11 +81,11 @@ app.use(function(req, res, next) {
 
 
 
-function modifiedName(x)
-{
-	x=x.toLowerCase(x);
-	x=x.replace(/[^a-zA-Z0-9 ]/g, "");
-	x=x.replace(/\s/g,'');
+function modifiedName(x) {
+	
+	x = x.toLowerCase(x);
+	x = x.replace(/[^a-zA-Z0-9 ]/g, "");
+	x = x.replace(/\s/g,'');
 	return x;
 }
 
@@ -90,51 +94,6 @@ function modifiedName(x)
 
 
 
-
-// auxiliary function to add items
-// in items node of the database
-// items will also added in items node
-// for easy searching
-// accepts same data as addInventory()
-function addItems(req, res) {
-
-	let sub = req.body.sub;						// user UID
-	let userInventory = shops.doc(sub);			// reference to use inventory
-
-	let promises = [];						// promises array to verify
-
-	let items = req.body.items;				// get items from body
-
-	for(item in items) {					// traverse on items
-
-		let subCategory = items[item].subCategory;		// get item category
-		let itemName = items[item].itemName;			// get item name
-
-		itemName = modifiedName(itemName);				// modify item name for key
-
-		let x = db.collection('items').doc(itemName).set({		// set item in items node
-			subCategory: subCategory
-		});
-
-		promises.push(x);					// push promise to array
-	}
-
-	Promise.all(promises)					//if all the items are added (promises resolved)
-	.then(() => {
-		return res.status(200).json({
-			success: true,
-			message: "items added"
-		})
-	})
-	.catch((err) => {						// if items could not be added
-
-		return res.status(500).json({
-			success: false,
-			message: "could not add all items",
-			err: err
-		})
-	})
-}
 
 
 
