@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Page Title</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <style>
+         /*body{
+            background-color: white;
+            background-image: url("https://www.ginesys.in/sites/default/files/blogs/image/Inventory-Management-System-1.png");
+            }*/
+         body{
+             /*position:fixed;*/
+             background:url(http://subtlepatterns2015.subtlepatterns.netdna-cdn.com/patterns/footer_lodyas.png);
+             animation:50s scroll infinite linear;
+             top:0;
+             left:0;
+             width:100%;
+             height:100%;
+         }
+         @keyframes scroll{
+             100%{
+                 background-position:0px -3000px;
+             }
+         }
+         .form_container{
+             width:30%;
+             background-color: white;
+             padding:30px 25px;
+             vertical-align: center;
+         }
+         label[for="item"]{
+             width:100%;
+             display: flex;
+             justify-content: space-between;
+         }
+         #items{
+             border:2px solid black;
+             border-radius: 10px;
+             padding:10px;
+         }
+         #items .item{
+             position: relative;
+             border:2px solid black;
+             border-width: 2px 0 0 0;
+             padding:1px;
+         }
+         .form-group{
+             position: relative;
+         }
+         .item{
+             display:flex;
+         }
+         .item .item_div{
+             flex-grow: 1;
+         }
+         .item .close_modal{
+             align-self: center;
+             height: 45px;
+         }
+         .close_modal{
+             align-self: flex-end;
+             flex-basis:50px;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+         }
+         @media only screen and (max-width:600px){
+             .form_container{
+                 width:80%;
+                 padding-left: 10px;
+                 padding-right: 10px;
+             }
+         }
+         .submit{
+             width:100%;
+             height:50px;
+         }
+         .category.invalid{
+             border-color:tomato;
+         }
+         .category-text{
+             display: none;
+         }
+         .invalid-text{
+             color:red;
+             display: block;
+         }
+         #events .times{
+             display: flex;
+             justify-content: space-between;
+         }
+         #events .times .time_container{
+             flex-basis:45%;
+         }
+         .nav-item{
+             display: inline;
+         }
+         .search-form{
+             display: none;
+         }
+         .ex{
+             color:white;
+         }
+         #inputData{
+             margin-top: 10%; 
+         }
+        </style>
+    </head>
+    <body>
+        <div id="inputData">
+            <div class="container form_container">
+                <h1 class="heading">Update Inventory</h1>
+                <form id="events" action="#">
+                    
+                    <div class="form-group" id="items">
+                        <label for="item"><span>Products</span><span id="add_item" class="btn btn-primary">add product</span></label>
+                        <div class="hold_items"></div>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Add to inventory" class="submit btn btn-success">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!--extra elements-->
+        <div class="item">
+
+            <div class="item_div">
+                <div class="form-group">
+                    <!-- <small class="form-text">Product Name</small> -->
+                    <input type="text" name="item_name"  class="item_name form-control" placeholder="item name" required>
+                </div>
+                <div class="form-group">
+                    <!-- <small class="form-text">Price</small> -->
+                    <input type="text" name="item_price" class="item_price form-control" placeholder="price" required>
+                </div>
+                <div class="form-group">
+                    <!-- <small class="form-text">Category</small> -->
+                    <select class="item_category form-control" placeholder="subcatetory" required>
+                        <option value="-1">Select Option</option>
+                        <option value="0">Food</option>
+                        <option value="1">Electronics</option>
+                        <option value="2">Footwear</option>
+                        <option value="3">Clothes</option>
+                        <option value="4">Books and Stationary</option>
+                        <option value="5">Health and Beauty</option>
+                        <option value="6">Sports</option>
+                        <option value="7">Services</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <!-- <small class="form-text">Sub category</small> -->
+                    <select style="display:none" name="item_category" class="item_sub_category form-control" placeholder="subcatetory" required></select>
+                </div>
+            </div>
+            <div class="close_modal btn btn-danger">x</div>
+        </div>
+
+        <!--extra elements-->
+    </body>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <!-- <script src="config.js" charset="utf-8"></script> -->
+    <script>
+        let token=JSON.parse(localStorage.getItem('jwtToken'));
+     $(function(){
+         const $form = $('#events');
+         //reset form
+         function resetForm(){
+             $form[0].reset();
+             $form.find('.hold_items').html('');
+         }
+         let $item = $('.item').detach();
+         //add categories to options list
+         const url = "http://us-central1-excaliburtut.cloudfunctions.net/api/";
+         const postInventory = url + "user/inventory";
+         const postItems = url + "items";
+         
+         const item_category_data = [
+                    ["Packed Food" , "Fast Food" , "Bakery" , "Groceries"],
+                    ["Mobiles" , "Lighting" , "Home Appliances","Kitchen Appliances"],
+                    ["Sneakers","Sports Shoes","Formal Shoes","Casual Shoes"],
+                    ["Casual Clothing","Formal Clothing","Party Wear Clothes","Inner Wear"],
+                    ["Pens & Pencils","Colors","Notebooks","Books"],
+                    ["Medicines","Cosmetics","Contraceptives","Skin Care"],
+                    ["Sports Equipments","Sports Gear","Sports Kits","Dietary Supplements"],
+                    ["Service Centres","Home Repair","Automobile Workshops","Counsellors"],
+                ];
+         
+         //add rules and coordinators
+         const $cor_container = $('#items .hold_items');
+         $('#add_item').on('click',function(e){
+             e.preventDefault();
+             e.stopPropagation();
+             let $newItem = $item.clone();
+             $newItem.find('.close_modal').on('click',function(e){
+                 $(this).parent().remove();
+             })
+             $cor_container.prepend($newItem);
+         });
+
+
+         $(document).on("change",".item_category",function(e){
+             let $this = $(this);
+             let $item_sub_category = $this.parent().parent().find(".item_sub_category");
+             $item_sub_category.empty();
+             if(this.value == -1){
+                 $item_sub_category.css({"display":"none"});
+             }
+             else{
+                 $item_sub_category.css({"display":"block"});
+                 for(let i = 0; i < item_category_data[this.value].length; i++){
+                     $item_sub_category.append("<option>"+item_category_data[this.value][i]+"</option>");
+                 }
+             }
+         });
+
+         //handle submit construct json object
+         $("#events").on('submit',function(e){
+             e.preventDefault();
+             e.stopPropagation();
+             let jsonForm = {
+                 items:[],
+             };
+             const $form = $('#events');
+             jsonForm.items = [];
+             $form.find('.item').each(function(){
+                 let itemName = $(this).find('.item_name').val();
+                 let price = $(this).find('.item_price').val();
+                 price=Number(price);
+                 let subCategory=$(this).find('.item_sub_category').val();
+                 jsonForm.items.push({itemName:itemName,price:price,subCategory:subCategory});
+             })
+             console.log(jsonForm);
+             // let requestPostUrl = url + "events";
+             $.ajax({
+                 url: postInventory,
+                 data: jsonForm,
+                 type: "POST",
+                 headers:{
+                     'Content-Type': "application/x-www-form-urlencoded",
+                     'Authorization': token
+                 },
+                 success: function(result, status) {
+                     if(status == 'success')
+                         {
+                             alert('Data input Successful');
+                         }
+                     //clearing form
+                     resetForm();
+                 },
+             });
+             $.ajax({
+                 url: postItems,
+                 data: jsonForm,
+                 type: "POST",
+                 headers:{
+                     'Content-Type': "application/x-www-form-urlencoded",
+                     'Authorization': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiR2F1cmF2IGFyb3JhIiwic3ViIjoiMTA4NzgwNzIxMjY0NzkyMDk2ODI3IiwiZW1haWwiOiJndWFyYXYuYXJvcmE3QGdtYWlsLmNvbSIsInBpY3R1cmUiOiJodHRwczovL2xoNC5nb29nbGV1c2VyY29udGVudC5jb20vLW05aEpxVTlTTGp3L0FBQUFBQUFBQUFJL0FBQUFBQUFBSkdFLzBDRThLN012NzNrL3M5Ni1jL3Bob3RvLmpwZyIsIm9uQm9hcmQiOmZhbHNlLCJpYXQiOjE1NDAxNTI2OTB9.8KWeArDwMilyapQLroBdNwiyRaEMSes8cZRG6bBb1is"
+                 },
+                 success: function(result, status) {
+                     if(status == 'success')
+                         {
+                             alert('Data input Successful');
+                         }
+                     // clearing form
+                     resetForm();
+                 },
+             });
+         });
+     })
+     
+    </script>
+</html>

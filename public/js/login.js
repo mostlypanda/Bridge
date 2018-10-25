@@ -4,13 +4,13 @@ function hideLoader() {
   $("#loader").attr("href", "clearcss");
   $("#overlay").addClass("d-none");
   $("#main-div").removeClass("d-none");
-  $("#animation").attr("href", "./master.css");
+  $("#animation").attr("href", "./css/master.css");
 };
 
 hideLoader();
 
 function showLoader() {
-	$("#loader").attr("href", "./loader.css");
+	$("#loader").attr("href", "./css/loader.css");
 	$("#overlay").removeClass("d-none");
   $("#main-div").addClass("d-none");
 	$("#animation").attr("href", "clearcss");
@@ -22,13 +22,21 @@ function onSignIn(googleUser) {
 	console.log('Name: ' + profile.getName());
 	console.log('Image URL: ' + profile.getImageUrl());
 	console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-
+	console.log(profile.getName());
 	console.log(googleUser.getAuthResponse().id_token);
 
 	let token = googleUser.getAuthResponse().id_token;
 	let name = profile.getName();
 
-	setUpPage(name);
+	// setUpPage(name);
+	console.log(name);
+	console.log($("#user"));
+	$("#user").removeClass("d-none");
+	console.log($("#user"));
+	$("#user").children('h2').html("Welcome "+ name+ " to BRIDGE." );
+	localStorage.setItem('userName', name);
+	console.log(localStorage.getItem('userName'));
+
 	requestFirebase(token);
 }
 
@@ -66,24 +74,13 @@ function requestFirebase(token) {
 		},
 		success: function(result, status) {
 
-			// if(status === 'success') {
-
 			if(result["success"] === true) {
-
-
-				console.log("true aa gya");
-
-
 
 				if(result["onBoard"] === true) {
 
-					console.log("onboard hai");
-
-					// 			console.log("jwt - ", result["data"]["token"]);
-
 					let token = result["data"]["token"];
 					localStorage.setItem("jwtToken", JSON.stringify(token));
-					// 			// user is already onBoard
+					// user is already onBoard
 
 					setUpLoggedIn();
 

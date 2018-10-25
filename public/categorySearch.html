@@ -81,6 +81,8 @@
   <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
   </head>
   <body>
 
@@ -99,27 +101,27 @@
 
 <div class="d-none" id="main-div">
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-              <div class="container-fluid">
-            <a class="navbar-brand" href="./index.html">BRIDGE.</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
+                <div class="container-fluid">
+              <a class="navbar-brand" href="./index.html">BRIDGE.</a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
 
-            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-              <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-                <li class="nav-item">
-                  <a class="nav-link" href="searchpage.html" style="color:white; text-decoration:none;">Search<span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item" style="margin-left:20px">
-                  <a class="nav-link" href="#" style="color:white; text-decoration:none;">Register Here</a>
-                </li>
-                <li class="nav-item" style="margin-left:20px">
-                  <a class="nav-link" href="#" style="color:white; text-decoration:none;">Contact Us</a>
-                </li>
-              </ul>
+              <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link" href="./searchPage.html" style="color:white; text-decoration:none;"><i class="fa fa-search"></i>&nbsp;Search<span class="sr-only">(current)</span></a>
+                  </li>
+                  <li class="nav-item" style="margin-left:20px">
+                    <a class="nav-link" href="./login.html" style="color:white; text-decoration:none;"><i class="fa fa-user-plus"></i>&nbsp;Login</a>
+                  </li>
+                  <li class="nav-item" style="margin-left:20px">
+                    <a class="nav-link" href="./index.html#contactUs" style="color:white; text-decoration:none;"><i class="fa fa-phone"></i>&nbsp;Contact Us</a>
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
-        </nav>
+          </nav>
         <br>
         <br><br><br>
 
@@ -185,7 +187,8 @@ $(document).ready(function() {
             marker = new google.maps.Marker({
                     // position: new google.maps.LatLng(Number(localStorage.getItem('latitude'),Number(localStorage.getItem('longitude')),
                     position: new google.maps.LatLng(originlat, originlong),
-                    map: map
+                    map: map,
+                    icon:"http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
                 });
                 google.maps.event.addListener(marker, 'mouseover', (function (marker, j) {
                     return function () {
@@ -251,7 +254,8 @@ $(document).ready(function() {
             let origin1=originlat+","+originlong;
             let destination1=desLat+","+desLon;
             console.log(origin1);
-            window.location.href = "https://www.google.com/maps/dir/?api=1&origin="+origin1+"&destination="+destination1+"";
+              window.open("https://www.google.com/maps/dir/?api=1&origin="+origin1+"&destination="+destination1+"",'_blank');
+            
           })
         }
       }

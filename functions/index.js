@@ -83,7 +83,16 @@ function modifiedName(x)
 
 
 function addInventory(req, res) {
-														// use data in body
+														// use data in bod
+
+	if(req.body.onBoard===false){
+		return res.status(401).json({
+			success:false,
+			message:"not onBoarded"
+		})
+	}
+
+
 	let sub = req.body.sub;								// get UID from body
 	let userInventory = shops.doc(sub);					// refrence to user inventory
 

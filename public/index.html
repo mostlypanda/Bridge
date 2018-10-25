@@ -12,6 +12,8 @@
   integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
   crossorigin="anonymous"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
 <script type="text/javascript">
 $(document).ready(function() {
 
@@ -42,10 +44,87 @@ scrollLink.each(function() {
 })
 
 })
-</script>
+$(document).ready(function() {
 
+var scrollLink = $("#shiftbottom");
+
+// Smooth scrolling
+scrollLink.click(function(e) {
+e.preventDefault();
+$('body,html').animate({
+  scrollTop: $(this.hash).offset().top
+}, 700 );
+});
+
+// Active link switching
+$(window).scroll(function() {
+var scrollbarLocation = $(this).scrollTop();
+
+scrollLink.each(function() {
+
+  var sectionOffset = $(this.hash).offset().top - 200;
+
+  if ( sectionOffset <= scrollbarLocation ) {
+    $(this).parent().addClass('active');
+    $(this).parent().siblings().removeClass('active');
+  }
+})
+
+})
+
+})
+</script>
+<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous"> -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <!-- Latest compiled and minified CSS -->
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<style media="screen">
+#contactUs
+{
+background: url('./images/bg-01.jpg') center;
+/* padding-left: 11em;
+padding-right: 20em; */
+font-family:
+Georgia, "Times New Roman",
+Times, serif;
+/* color: red; */
+height: 100%;
+
+}
+.footertext {
+  color: #ffffff;
+  font-family: 'Montserrat', sans-serif;
+
+}
+.aboutustext{
+    margin-top:100px;
+
+    font-size: 45px;
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+}
+.peoplebehind
+{
+
+        margin-top:20px;
+        font-size: 35px;
+        color: #ffffff;
+        font-family:Georgia, "Times New Roman";
+        text-align: center
+}
+.h4text{
+
+    font-size: 20px;
+    color: #ffffff;
+    /* font-family: 'Montserrat', sans-serif; */
+    text-align: justify;
+    line-height: 2;
+}
+a:hover{
+    text-decoration: none;
+}
+</style>
     </head>
     <body>
         <header class="navbar navbar-inverse navbar-fixed-top bs-docs-nav" role="banner">
@@ -57,27 +136,22 @@ scrollLink.each(function() {
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
                 </button>
-                <a href="./divsearch.html" class="navbar-brand"><b>Bridge.</b></a>
+                <a href="./index.html" class="navbar-brand"><b>Bridge.</b></a>
               </div>
               <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
                 <ul class="nav navbar-nav navbar-right">
 
                   <li class="dropdown">
-                    <!-- <a href="#" class="dropdown-toggle" data-toggle="dropdown">About <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                      <li><a href="#">Mission</a></li>
-                      <li><a href="#">Vision</a></li>
-                      <li><a href="#">Careers</a></li>
-                    </ul> -->
+
                   </li>
                   <li>
-                    <a href="./searchpage.html" style="color:white">Search</a>
+                    <a href="./searchPage.html" style="color:white"><i class="fa fa-search"></i>&nbsp;Search</a>
                   </li>
                   <li style="margin-left:15px">
-                    <a href="#" style="color:white">Register Here</a>
+                    <a href="./login.html" style="color:white"><i class="fa fa-user-plus"></i>&nbsp;Login</a>
                   </li>
                   <li style="margin-right:20px; margin-left:15px">
-                    <a href="#" style="color:white">Contact Us</a>
+                    <a href="#contactUs" style="color:white" id="shiftbottom"><i class="fa fa-phone"></i>&nbsp;Contact Us</a>
                   </li>
                 </ul>
               </nav>
@@ -93,10 +167,10 @@ scrollLink.each(function() {
                     <h3 class="h3text" style="color: rgba(255,255,255,3.4)"><b><u>Welcome to Bridge</u></b><b>.</b></h3>
                     <br>
                     <h1 class="h1text" style="color: rgba(255,255,255,3.4)">
-                        We are a creative group <br>
-                        of people who design <br>
-                        influential brands and <br>
-                        digital experiences.
+                        We are a group who<br>
+                    strive to bring close the <br>
+                    prospects of all shopping<br> experiences
+                    into one!
                     </h1>
                         <br><br><br>
                         <a class="btn btn-default btn-lg search btnbtn" style="margin-right:10px" href="#middle1">
@@ -110,21 +184,127 @@ scrollLink.each(function() {
 
                 </div> <!-- end home-content -->
 
+<div class="">
 
+</div>
         <div class="container_dup">
             <div class="one-half left" id="middle1">
                 <h1 class="color searchhere" >Are You A Customer?</h1>
-                <a class="cta searchbut">Search</a>
+                <a class="cta searchbut" href="./searchPage.html">Search</a>
             </div>
             <div class="one-half right" id="middle2">
                 <h1 class="color searchhere">Are You A Businessman?</h1>
-                <a class="cta registerbut">Register</a>
+                <a class="cta registerbut" href="./login.html">Register</a>
             </div>
         </div>
-        <div class="searchbox" id="sbox">
+
+        <div id="contactUs">
+            <div class="container">
+                <div class="row">
+                    <h3 class="aboutustext"><u>About Us</u></h3>
+                    <br>
+                    <!-- <div class="container"> -->
+                        <h4 class="h4text">We are a group of developers who have provided a platform to the local businessmen and entrepreneurs. The increasing demand for online shopping has affected the sales of these local shopkeepers. Though they keep every item that is available online but people still rush to the online shopping products where you may not get the in-hand feel of the product and may end up receiving a faulty product. The main aim of our organisation is to uplift the local artesans and shopkeepers.</h4>
+                    <!-- </div> -->
+                    </div>
+                    <h3 class="peoplebehind"><u>PEOPLE&nbsp;&nbsp;BEHIND&nbsp;&nbsp;BRIDGE</u></h3>
+                    <br><br><br>
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <div class="card">
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <img src="./images/grv.jpg" id="img-id">
+                                    </div>
+                                    <div class="col-lg-9">
+
+                                            <h4 style="margin-left:40px;margin-top:30px;font-size:16px;"><b>Gaurav Arora</b></h4>
+                                            <!-- <br> -->
+                                            <div style="margin-left:40px;margin-bottom:10px;font-size:12px;"><i class="fa fa-phone" aria-hidden="true"></i>+91-9416272142</div>
+
+                                            <div style="margin-left:26px;text-align:center">
+                                                <a class="fa fa-facebook-official" aria-hidden="true" style="font-size:18px;text-decoration:none" href="https://www.facebook.com/gauravarora3011"></a>
+                                                &nbsp;&nbsp;
+                                            <a class="fa fa-github" aria-hidden="true" style="font-size:18px;" href="https://github.com/d3xt3r-grv"></a>
+                                        </div>
 
 
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="card">
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <img src="./images/sus.jpg" id="img-id">
+                                    </div>
+                                    <div class="col-lg-9">
+
+                                            <h4 style="margin-left:40px;margin-top:30px;font-size:16px;"><b>Sushant Aggarwal</b></h4>
+                                            <!-- <br> -->
+                                            <div style="margin-left:40px;margin-bottom:10px;font-size:12px;"><i class="fa fa-phone" aria-hidden="true"></i>+91-8901257888</div>
+
+                                            <div style="margin-left:26px;text-align:center"><a class="fa fa-facebook-official" aria-hidden="true" style="font-size:18px;text-decoration:none" href="https://www.facebook.com/su756agg"></a>&nbsp;&nbsp;
+                                            <a class="fa fa-github" aria-hidden="true" style="font-size:18px;" href="https://github.com/sus19agg"></a></div>
+
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="card">
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <img src="./images/har.jpg" id="img-id">
+                                    </div>
+                                    <div class="col-lg-9">
+
+                                            <h4 style="margin-left:40px;margin-top:30px;font-size:16px;"><b>Hardik Sachdeva</b></h4>
+                                            <!-- <br> -->
+                                            <div style="margin-left:40px;margin-bottom:10px;font-size:12px;"><i class="fa fa-phone" aria-hidden="true"></i>+91-9996531501</div>
+
+                                            <div style="margin-left:26px;text-align:center"><a class="fa fa-facebook-official" aria-hidden="true" style="font-size:18px;text-decoration:none" href="https://www.facebook.com/hardiksachdeva02"></a>&nbsp;&nbsp;
+                                            <a class="fa fa-github" aria-hidden="true" style="font-size:18px;" href="https://github.com/Hstellet"></a></div>
+
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="card">
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <img src="./images/ank.jpg" id="img-id">
+                                    </div>
+                                    <div class="col-lg-9">
+
+                                            <h4 style="margin-left:40px;margin-top:30px;font-size:16px;"><b>Ankur Charan</b></h4>
+                                            <!-- <br> -->
+                                            <div style="margin-left:40px;margin-bottom:10px;font-size:12px;"><i class="fa fa-phone" aria-hidden="true"></i>+91-9468184831</div>
+
+                                            <div style="margin-left:26px;text-align:center"><a class="fa fa-facebook-official" aria-hidden="true" style="font-size:18px;text-decoration:none" href="https://www.facebook.com/ankurcharan06"></a>&nbsp;&nbsp;
+                                            <a class="fa fa-github" aria-hidden="true" style="font-size:18px;" href="https://github.com/ankurcharan"></a></div>
+
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+            </div>
         </div>
+
+
+
+
 <script type="text/javascript">
 $l = $('.left')
 $r = $('.right')
@@ -145,6 +325,8 @@ $(".searchbut").click(function()
     window.location.href="searchpage.html";
 });
 // console.log($(".header_wrap.fixed_nav_menu"));
+
 </script>
+
     </body>
 </html>
